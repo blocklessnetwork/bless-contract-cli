@@ -13,12 +13,13 @@
   "author": "bless",
   "license": "ISC",
   "dependencies": {
-    "anchor": "^1.4.1",
-    "commander": "12.1.0",
     "@solana/web3.js": "1.98.2",
-    "bls-node-registration": "^0.0.3",
+    "anchor": "^1.4.1",
+    "bls-node-registration": "^0.0.5",
     "chalk": "^4.0.0",
-    "cli-box": "^6.0.10"
+    "cli-box": "^6.0.10",
+    "commander": "12.1.0",
+    "ed25519": "^0.0.5"
   },
   "engines": {
     "node": ">=18.18.0"

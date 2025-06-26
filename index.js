@@ -3,6 +3,7 @@ const Box = require("cli-box");
 const chalk = require("chalk");
 const { Command } = require("commander");
 const registerCommand = require("./command/register.js");
+const analyzeCommand = require("./command/analyze.js");
 const program = new Command();
 
 async function main() {
@@ -14,8 +15,9 @@ async function main() {
       stringify: false,
     },
     `
-    ${chalk.yellow(":")}
-  npx bless-contract-cli  help }`,
+    ${chalk.yellow("Welcome to BlessContract CLI!")}
+    Run: npx bless-contract-cli help
+    `,
   );
   program.addHelpText(
     "after",
@@ -26,14 +28,12 @@ async function main() {
     .description(packageJson.description)
     .version(packageJson.version);
 
-  program
-    .command("version")
-    .description("Show the current version")
-    .action(() => {
-      console.log(`Current version: ${packageJson.version} `);
-    });
   program.addCommand(registerCommand);
+  program.addCommand(analyzeCommand);
   await program.parseAsync(process.argv);
 }
 
-main();
+main().catch((error) => {
+  console.error("Error:", error);
+  process.exit(1);
+});

@@ -17,17 +17,26 @@ deadline.required = true;
 regInitCommand.addArgument(deadline).action(async (deadline, options) => {
   options.cluster = options.cluster || "localnet";
   options.signer = options.signer || getPath("~/.config/solana/id.json");
-  const keypair = readKeypair(options.signer);
-  const client = getBlsRegisterClient(options.cluster, keypair);
-  if (deadline < 100) {
-    deadline = new Date().getTime() / 1000 + 24 * 60 * 60 * deadline;
+  try {
+    const keypair = readKeypair(options.signer);
+    const client = getBlsRegisterClient(options.cluster, keypair);
+    if (isNaN(deadline) || deadline < 0) {
+      console.error(chalk.red("Error: Deadline must be a positive number"));
+      process.exit(1);
+    }
+    if (deadline < 100) {
+      deadline = new Date().getTime() / 1000 + 24 * 60 * 60 * deadline;
+    }
+    await client.nodeRegistrationClient.initialNodeRegistration(
+      new anchor.BN(deadline),
+      keypair.publicKey,
+    );
+    console.log(chalk.green("registration initial success."));
+    process.exit(0);
+  } catch (e) {
+    console.log(chalk.red("registration initial fail: " + e));
+    process.exit(1);
   }
-  await client.nodeRegistrationClient.initialNodeRegistration(
-    new anchor.BN(deadline),
-    keypair.publicKey,
-  );
-  console.log(chalk.green("registration initial success."));
-  process.exit(0);
 });
 
 module.exports = regInitCommand;
