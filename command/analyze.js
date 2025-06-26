@@ -49,7 +49,7 @@ analyzeCommand.addArgument(file).action(async (file, options) => {
         if (print) {
           const mint = userToken.mint.toBase58();
           const amount = userToken.amount;
-          console.log(`        mint: ${mint} amount:${amount}`);
+          console.log(`mint: ${mint} amount:${amount}`);
         }
       }
     }
