@@ -24,36 +24,42 @@ analyzeCommand.addArgument(file).action(async (file, options) => {
   if (!isNaN(options.pindex)) {
     pageIndex = parseInt(options.pindex);
   }
-  let whiteList = null;
+  try {
+    let whiteList = null;
 
-  if (file != null && fs.existsSync(file)) {
-    whiteList = JSON.parse(fs.readFileSync(file, "utf8"));
-  }
+    if (file != null && fs.existsSync(file)) {
+      whiteList = JSON.parse(fs.readFileSync(file, "utf8"));
+    }
 
-  do {
-    rs =
-      await client.nodeRegistrationClient.listUserAccountsByPaginationIndex(
-        pageIndex,
-      );
-    for (const account of rs) {
-      const user = account.toBase58();
-      console.log(`user: ${user}`);
-      const userTokens =
-        await client.nodeRegistrationClient.listAllTokenAccountInfo(account);
-      for (const userToken of userTokens) {
-        let print = true;
-        if (whiteList != null) {
-          const limit = whiteList[userToken.mint];
-          if (userToken.amount < limit) print = false;
-        }
-        if (print) {
-          const mint = userToken.mint.toBase58();
-          const amount = userToken.amount;
-          console.log(`mint: ${mint} amount:${amount}`);
+    do {
+      rs =
+        await client.nodeRegistrationClient.listUserAccountsByPaginationIndex(
+          pageIndex,
+        );
+      for (const account of rs) {
+        const user = account.toBase58();
+        console.log(`user: ${user}`);
+        const userTokens =
+          await client.nodeRegistrationClient.listAllTokenAccountInfo(account);
+        for (const userToken of userTokens) {
+          let print = true;
+          if (whiteList != null) {
+            const limit = whiteList[userToken.mint];
+            if (userToken.amount < limit) print = false;
+          }
+          if (print) {
+            const mint = userToken.mint.toBase58();
+            const amount = userToken.amount;
+            console.log(`mint: ${mint} amount:${amount}`);
+          }
         }
       }
-    }
-    pageIndex += 1;
-  } while (rs != null && rs.length > 0);
+      pageIndex += 1;
+    } while (rs != null && rs.length > 0);
+    process.exit(0);
+  } catch (e) {
+    console.log(chalk.red("analyze execute fail: " + e));
+    process.exit(1);
+  }
 });
 module.exports = analyzeCommand;
