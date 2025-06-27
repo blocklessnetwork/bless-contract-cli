@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "cli": "node index.js"
+    "package": "webpack"
   },
   "author": "bless",
   "license": "ISC",
@@ -20,6 +20,10 @@
     "cli-box": "^6.0.10",
     "commander": "12.1.0",
     "ed25519": "^0.0.5"
+  },
+  "devDependencies": {
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1"
   },
   "engines": {
     "node": ">=18.18.0"
