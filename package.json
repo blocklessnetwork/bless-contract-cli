@@ -4,7 +4,7 @@
   "description": "The CLI tool for interacting with bless contract.",
   "main": "index.js",
   "bin": {
-    "blesscontract": "./index.js"
+    "blesscontract": "./dist/index.js"
   },
   "scripts": {
     "test": "mocha",
