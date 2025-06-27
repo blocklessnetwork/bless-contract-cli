@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const packageJson = require("./package.json");
 const Box = require("cli-box");
 const chalk = require("chalk");

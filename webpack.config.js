@@ -36,7 +36,6 @@ module.exports = [
     output: {
       filename: "index.js",
       path: dist,
-      libraryTarget: "commonjs",
     },
     ...common,
   },
