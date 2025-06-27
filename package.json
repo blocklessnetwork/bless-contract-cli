@@ -1,10 +1,10 @@
 {
-  "name": "blessconstract",
+  "name": "blesscontract",
   "version": "0.0.1",
   "description": "The CLI tool for interacting with bless contract.",
   "main": "index.js",
   "bin": {
-    "blessnet": "./index.js"
+    "blesscontract": "./index.js"
   },
   "scripts": {
     "test": "mocha",
