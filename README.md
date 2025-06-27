@@ -7,7 +7,6 @@ This project is for interacting with the bless contract,  the admin use the cli 
 
 npx  blesscontract
 
-
 ## How to initial the registration
 
 npx  blesscontract
