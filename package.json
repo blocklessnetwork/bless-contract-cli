@@ -1,0 +1,27 @@
+{
+  "name": "blessconstract",
+  "version": "0.0.1",
+  "description": "The CLI tool for interacting with bless contract.",
+  "main": "index.js",
+  "bin": {
+    "blessnet": "./index.js"
+  },
+  "scripts": {
+    "test": "mocha",
+    "cli": "node index.js"
+  },
+  "author": "bless",
+  "license": "ISC",
+  "dependencies": {
+    "@solana/web3.js": "1.98.2",
+    "anchor": "^1.4.1",
+    "bls-node-registration": "^0.0.5",
+    "chalk": "^4.0.0",
+    "cli-box": "^6.0.10",
+    "commander": "12.1.0",
+    "ed25519": "^0.0.5"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}
