@@ -3,7 +3,7 @@
 This project is for interacting with the bless contract,  the admin uses the cli to set the registration contract deadline time or pause the register on chain
 
 
-## How to intsall
+## How to install
 
 Execute the following command to install the script.
 
