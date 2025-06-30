@@ -1,17 +1,17 @@
 # bless-contract-cli
 
-This project is for interacting with the bless contract,  the admin use the cli to set the registration contract deadline time or pause the register on chain
+This project is for interacting with the bless contract,  the admin uses the cli to set the registration contract deadline time or pause the register on chain
 
 
 ## How to intsall
 
-Execute follow command to install script.
+Execute the following command to install the script.
 
 ```bash
 npx  blesscontract
 ```
 
-if install success, you will get follow message
+If the installation is successful, you will get the following message.
 
 ```bash
 Usage: blesscontract [options] [command]
@@ -32,13 +32,13 @@ visit https://docs.bless.network for more information.
 
 ## How to initial the registration
 
-Execute follow command to get init help message.
+Execute the following command to get the init help message.
 
 ```bash
 npx  blesscontract register init --help
 ```
 
-Follow is the help message.
+Following is the help message.
 
 ```bash
 Usage: blesscontract register init [options] <deadline>
@@ -55,27 +55,27 @@ Options:
 ```
 
 
-Execute follow command to get init the registration.
+Execute the following command to init the registration.
 
 ```bash
 npx  blesscontract register init 1
 ```
 
-**Notice:** The parameter `1` is mean the deadline is now() + 1 * 24hours.
+**Notice:** The parameter `1` mean the deadline is now() + 1 * 24hours.
 
 **Notice:** The devnet has already been initialized.
 
 
 ## How to register
 
-Execute follow command to get regisetr help message.
+Execute the following command to get the register help message.
 
 ```bash
 npx  blesscontract register register --help
 ```
 
 
-Follow is the help message.
+Following is the help message.
 
 ```bash
 Usage: blesscontract register register [options] <nodeid>
@@ -92,3 +92,55 @@ Options:
   --bnsigner <bnsigner>  bnsigner: backend signer, default: ~/.config/solana/id.json
   -h, --help             display help for command
 ```
+
+
+### prepare node id key for register
+
+Follow the command to generate the node id.
+
+```bash
+solana-keygen new -o nodeid.json
+```
+
+Follow the command to get the public key of the node id.
+```bash
+solana-keygen  pubkey nodeid.json
+```
+
+### Execute the following command to register node id
+
+```bash
+node index.js register register EpuL59hXSGDt6M8UAxw3k1smXwJgJYPon9DUWC7agUcT
+```
+
+
+## How to set deadline
+
+Execute the following command to get the set deadline help message.
+
+```bash
+npx  blesscontract register deadline --help
+```
+
+Following is the help message.
+
+```bash
+Usage: blesscontract register deadline [options] [deadline]
+
+deadline: set/show the deadline of the registration, if is null, show daedline
+
+Arguments:
+  deadline             the deadline of registration, deafult: now() + n * 24hours
+
+Options:
+  --cluster <cluster>  solana cluster: mainnet, testnet, devnet, localnet, <custom>
+  -h, --help           display help for command
+```
+
+Execute the following command to set the deadline of the registration.
+
+```bash
+npx blesscontract register deadline 2
+```
+
+**Notice:** The parameter `2` mean the deadline is now() + 2 * 24hours.
