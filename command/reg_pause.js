@@ -21,6 +21,7 @@ registerSetPauseCommand.addArgument(pause).action(async (pause, options) => {
     const keypair = readKeypair(options.signer);
     const client = getBlsRegisterClient(options.cluster, keypair);
     if (pause != null) {
+      pause = pause.toLowerCase().trim();
       if (pause != "true" && pause != "false") {
         console.log(chalk.red("pause value must true or false"));
         process.exit(1);
