@@ -3,6 +3,7 @@ const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
 const ed = require("@noble/ed25519");
 const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
+const { WALLET_PATH } = require("../lib/constants");
 const { PublicKey } = require("@solana/web3.js");
 
 const registerDoCommand = new Command("register")
@@ -14,13 +15,10 @@ const registerDoCommand = new Command("register")
     "--pindex <page index>",
     "page index: solana bless node page index, default: 0",
   )
-  .option(
-    "--wallet <wallet>",
-    "wallet: user wallet, default: ~/.config/solana/id.json",
-  )
+  .option("--wallet <wallet>", "wallet: user wallet, default: " + WALLET_PATH)
   .option(
     "--bnsigner <bnsigner>",
-    "bnsigner: backend signer, default: ~/.config/solana/id.json",
+    "bnsigner: backend signer, default: " + WALLET_PATH,
   )
   .description("register: register node id on chain");
 const nodeid = new Argument(
@@ -34,8 +32,8 @@ registerDoCommand.addArgument(nodeid).action(async (nodeid, options) => {
     pindex = parseInt(options.pindex);
   }
 
-  options.wallet = options.wallet || getPath("~/.config/solana/id.json");
-  options.bnsigner = options.bnsigner || getPath("~/.config/solana/id.json");
+  options.wallet = options.wallet || getPath(WALLET_PATH);
+  options.bnsigner = options.bnsigner || getPath(WALLET_PATH);
   options.cluster = options.cluster || "localnet";
   try {
     if (nodeid == null) {

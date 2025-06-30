@@ -2,11 +2,17 @@ const { Command, Argument } = require("commander");
 const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
 const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
+const { WALLET_PATH } = require("../lib/constants");
 
 const registerSetDeadlineCommand = new Command("deadline")
   .option(
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
+  )
+  .option(
+    "--signer <signer>",
+    "signer: the signer is the backend signer who create the registraction account on chain. default " +
+      WALLET_PATH,
   )
   .description(
     "deadline: set/show the deadline of the registration, if is null, show daedline",

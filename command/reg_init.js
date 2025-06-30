@@ -1,5 +1,6 @@
 const { Command, Argument } = require("commander");
 const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
+const { WALLET_PATH } = require("../lib/constants");
 const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
 const regInitCommand = new Command("init")
@@ -7,7 +8,7 @@ const regInitCommand = new Command("init")
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
   )
-  .option("--signer <signer>", "backend signer: ~/.config/solana/id.json")
+  .option("--signer <signer>", "backend signer: " + WALLET_PATH)
   .description("initial: initial the registration");
 const deadline = new Argument(
   "deadline",
@@ -16,7 +17,7 @@ const deadline = new Argument(
 deadline.required = true;
 regInitCommand.addArgument(deadline).action(async (deadline, options) => {
   options.cluster = options.cluster || "localnet";
-  options.signer = options.signer || getPath("~/.config/solana/id.json");
+  options.signer = options.signer || getPath(WALLET_PATH);
   try {
     const keypair = readKeypair(options.signer);
     const client = getBlsRegisterClient(options.cluster, keypair);
