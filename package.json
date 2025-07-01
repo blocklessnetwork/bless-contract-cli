@@ -1,5 +1,5 @@
 {
-  "name": "blesscontract",
+  "name": "@blessnetwork/blesscontract",
   "version": "0.0.2",
   "description": "The CLI tool for interacting with bless contract.",
   "main": "index.js",

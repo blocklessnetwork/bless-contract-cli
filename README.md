@@ -8,7 +8,7 @@ This project is for interacting with the bless contract. The admin uses the CLI 
 Execute the following command to install the script.
 
 ```bash
-npx blesscontract
+npx @blessnetwork/blesscontract
 ```
 
 If the installation is successful, you will get the following message.
@@ -35,7 +35,7 @@ visit https://docs.bless.network for more information.
 Execute the following command to get the init help message.
 
 ```bash
-npx blesscontract register init --help
+npx @blessnetwork/blesscontract register init --help
 ```
 
 Following is the help message.
@@ -57,7 +57,7 @@ Options:
 Execute the following command to init the registration.
 
 ```bash
-npx blesscontract register init 1
+npx @blessnetwork/blesscontract register init 1
 ```
 
 **Notice:** The parameter `1` means the deadline is now() + 1 * 24hours.
@@ -69,7 +69,7 @@ npx blesscontract register init 1
 Execute the following command to get the register help message.
 
 ```bash
-npx blesscontract register register --help
+npx @blessnetwork/blesscontract register register --help
 ```
 
 Following is the help message.
@@ -107,7 +107,7 @@ solana-keygen pubkey nodeid.json
 ### Execute the following command to register node id
 
 ```bash
-npx blesscontract register register EpuL59hXSGDt6M8UAxw3k1smXwJgJYPon9DUWC7agUcT
+npx @blessnetwork/blesscontract register register EpuL59hXSGDt6M8UAxw3k1smXwJgJYPon9DUWC7agUcT
 ```
 
 ## How to set deadline
@@ -115,7 +115,7 @@ npx blesscontract register register EpuL59hXSGDt6M8UAxw3k1smXwJgJYPon9DUWC7agUcT
 Execute the following command to get the set deadline help message.
 
 ```bash
-npx blesscontract register deadline --help
+npx @blessnetwork/blesscontract register deadline --help
 ```
 
 Following is the help message.
@@ -137,7 +137,7 @@ Options:
 Execute the following command to set the deadline of the registration.
 
 ```bash
-npx blesscontract register deadline 2
+npx @blessnetwork/blesscontract register deadline 2
 ```
 
 **Notice:** The parameter `2` means the deadline is now() + 2 * 24hours.
@@ -147,7 +147,7 @@ npx blesscontract register deadline 2
 Execute the following command to get the pause help message.
 
 ```bash
-npx blesscontract register pause --help
+npx @blessnetwork/blesscontract register pause --help
 ```
 
 Following is the help message.
@@ -168,17 +168,17 @@ Options:
 Execute the following command to pause the registration.
 
 ```bash
-npx blesscontract register pause true
+npx @blessnetwork/blesscontract register pause true
 ```
 
 Execute the following command to resume the registration.
 
 ```bash
-npx blesscontract register pause false
+npx @blessnetwork/blesscontract register pause false
 ```
 
 Execute the following command to check the current pause status.
 
 ```bash
-npx blesscontract register pause
+npx @blessnetwork/blesscontract register pause
 ```
