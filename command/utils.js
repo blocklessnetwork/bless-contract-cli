@@ -4,11 +4,13 @@ const { SOLANA_CLUSTERS } = require("../lib/constants");
 const path = require("node:path");
 const os = require("os");
 const fs = require("node:fs");
-const { BlsClient: RegisterClient } = require("bls-node-registration");
+const {
+  BlsClient: RegisterClient,
+} = require("@blessnetwork/node-verification-ledger");
 const {
   BlsClient: BlsContractClient,
   BlessTokenAccounts,
-} = require("/Users/join/Works/bless-contract/dist");
+} = require("@blessnetwork/bless-contract");
 const getProvider = (input) => {
   let url = input;
   let cluster = "custom";
