@@ -4,7 +4,7 @@ const { SOLANA_CLUSTERS } = require("../lib/constants");
 const path = require("node:path");
 const os = require("os");
 const fs = require("node:fs");
-const { BlsClient } = require("bls-node-registration");
+const { BlsClient } = require("@blessnetwork/node-verification-ledger");
 const getProvider = (input) => {
   let url = input;
   let cluster = "custom";
