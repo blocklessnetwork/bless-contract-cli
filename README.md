@@ -182,3 +182,35 @@ Execute the following command to check the current pause status.
 ```bash
 npx @blessnetwork/blesscontract register pause
 ```
+
+
+## How to execute blesstoken command
+
+Prepare the accounts
+```bash
+#prepare the solana accounts.
+solana-keygen new -o authority.json
+solana-keygen new -o w1.json
+solana-keygen new -o w2.json
+solana-keygen new -o w3.json
+solana-keygen new -o w4.json
+solana-keygen new -o w5.json
+
+#prepare the mint token.
+token_key=$(spl-token create-token --mint-authority authority.json|grep Address:|awk '{print $2}')
+
+#airdrop to account SOL.
+solana airdrop 1 $(solana-keygen pubkey w1.json)
+solana airdrop 1 $(solana-keygen pubkey w2.json)
+solana airdrop 1 $(solana-keygen pubkey w3.json)
+solana airdrop 1 $(solana-keygen pubkey w4.json)
+solana airdrop 1 $(solana-keygen pubkey w5.json)
+
+#create the account associate token account.
+spl-token create-account --owner w1.json $token_key
+spl-token create-account --owner w2.json $token_key
+spl-token create-account --owner w3.json $token_key
+spl-token create-account --owner w4.json $token_key
+spl-token create-account --owner w5.json $token_key
+
+```

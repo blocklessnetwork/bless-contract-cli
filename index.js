@@ -5,6 +5,7 @@ const Box = require("cli-box");
 const chalk = require("chalk");
 const { Command } = require("commander");
 const registerCommand = require("./command/register.js");
+const blesstokenCommand = require("./command/bless_token.js");
 const analyzeCommand = require("./command/analyze.js");
 const program = new Command();
 
@@ -31,6 +32,7 @@ async function main() {
     .version(packageJson.version);
 
   program.addCommand(registerCommand);
+  program.addCommand(blesstokenCommand);
   program.addCommand(analyzeCommand);
   await program.parseAsync(process.argv);
 }
