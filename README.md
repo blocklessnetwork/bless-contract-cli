@@ -14,7 +14,7 @@ npx @blessnetwork/blesscontract
 If the installation is successful, you will get the following message.
 
 ```bash
-Usage: blesscontract [options] [command]
+Usage: @blessnetwork/blesscontract [options] [command]
 
 The CLI tool for interacting with bless contract.
 
@@ -41,7 +41,7 @@ npx @blessnetwork/blesscontract register init --help
 Following is the help message.
 
 ```bash
-Usage: blesscontract register init [options] <deadline>
+Usage: @blessnetwork/blesscontract register init [options] <deadline>
 
 initial: initial the registration
 
@@ -153,7 +153,7 @@ npx @blessnetwork/blesscontract register pause --help
 Following is the help message.
 
 ```bash
-Usage: blesscontract register pause [options] [pause]
+Usage: @blessnetwork/blesscontract register pause [options] [pause]
 
 pause: set/show the pause status of the registration, the value is true/false, if is null, show status
 
@@ -181,4 +181,83 @@ Execute the following command to check the current pause status.
 
 ```bash
 npx @blessnetwork/blesscontract register pause
+```
+
+
+## How to execute blesstoken command
+
+Execute the following command to get the blesstoken help message.
+
+``` bash
+npx @blessnetwork/blesscontract blesstoken --help
+```
+
+Following is the help message.
+
+```bash
+Usage: @blessnetwork/blesscontract blesstoken [options] <wallets> <mint> <mintAuthority>
+
+blesstoken: initial blesstoken registration
+
+Arguments:
+  wallets              wallets: wallets is the wallet 1-5 that distrubuted the bless token by the contract, value should be base58 sperate by `,`.
+                       Wallet1 is Investor, Wallet2 is (Team + advisor), Wallet3 is Foundation, Wallet4 is (Ecosystem + Liquidity Provision + TGE
+                       Marketing), Wallet5 is (Community Rewards)
+  mint                 mint: the mint token public key(base58)
+  mintAuthority        mintAuthority: the mint authority, the value is file path of mintAuthority
+
+Options:
+  --cluster <cluster>  solana cluster: mainnet, testnet, devnet, localnet, <custom>
+  -h, --help           display help for command
+```
+
+1. Prepare the Mint Authory Keypair.
+
+```bash
+# Prepare the mint Authority keypair
+solana-keygen new -o authority.json
+```
+
+2. Create the mint token
+
+```bash
+spl-token create-token --mint-authority authority.json
+```
+
+The command output Ep9fFc5oKgbtkd1kVSKTFy7mariTdavtU6jJrT2SBcff
+
+3. Create the 5 major wallets
+
+```bash
+solana-keygen new -o w1.json
+solana-keygen new -o w2.json
+solana-keygen new -o w3.json
+solana-keygen new -o w4.json
+solana-keygen new -o w5.json
+```
+
+4. Guarantee the 5 major wallets account exist on the chain (for devnet or localnet use the airdrop )
+
+```bash
+solana airdrop 1 $(solana-keygen pubkey w1.json)
+solana airdrop 1 $(solana-keygen pubkey w2.json)
+solana airdrop 1 $(solana-keygen pubkey w3.json)
+solana airdrop 1 $(solana-keygen pubkey w4.json)
+solana airdrop 1 $(solana-keygen pubkey w5.json)
+```
+
+5. create the associate accounts of 5 major wallets
+
+```bash
+spl-token create-account --owner w1.json Ep9fFc5oKgbtkd1kVSKTFy7mariTdavtU6jJrT2SBcff
+spl-token create-account --owner w2.json Ep9fFc5oKgbtkd1kVSKTFy7mariTdavtU6jJrT2SBcff
+spl-token create-account --owner w3.json Ep9fFc5oKgbtkd1kVSKTFy7mariTdavtU6jJrT2SBcff
+spl-token create-account --owner w4.json Ep9fFc5oKgbtkd1kVSKTFy7mariTdavtU6jJrT2SBcff
+spl-token create-account --owner w5.json Ep9fFc5oKgbtkd1kVSKTFy7mariTdavtU6jJrT2SBcff
+```
+
+6. Use the bless contract cli to invoke the contract logic.
+
+```bash
+npx @blessnetwork/blesscontract blesstoken FrMxAhmD3QzF5qhN8bLqKzb7m8sTiXAZmMMh6ZpvVZTM,4EDnpHM7m3UnpqmaEFomZa9YPYsXshkWL9NLKMoGNewr,FAxc73vzyLpsbsch7cKT8JNVfhFt7YSisp8xD6CF7GsT,HKuXKEyhhzyRt5WeFQtELPng5Q6gXua4UzRAcaoGj4Fi,4i9d69rJRHEf3jwigajzX1QYc2wBcndkBna5JqEh8qTJ 9LCLCwANHQqCj2R4rWcvkka1tTMsfByVqa5gzuDCjYeg  authority.json
 ```

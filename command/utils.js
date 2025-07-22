@@ -4,7 +4,13 @@ const { SOLANA_CLUSTERS } = require("../lib/constants");
 const path = require("node:path");
 const os = require("os");
 const fs = require("node:fs");
-const { BlsClient } = require("@blessnetwork/node-verification-ledger");
+const {
+  BlsClient: RegisterClient,
+} = require("@blessnetwork/node-verification-ledger");
+const {
+  BlsClient: BlsContractClient,
+  BlessTokenAccounts,
+} = require("@blessnetwork/bless-contract");
 const getProvider = (input) => {
   let url = input;
   let cluster = "custom";
@@ -37,7 +43,22 @@ function getBlsRegisterClient(net, keypair) {
     commitment: "confirmed",
   });
 
-  const client = new BlsClient({ provider });
+  const client = new RegisterClient({ provider });
+  return client;
+}
+
+function getBlsContractClient(net, keypair) {
+  const connection = new anchor.web3.Connection(
+    getProvider(net).endpoint,
+    "confirmed",
+  );
+
+  const wallet = new anchor.Wallet(keypair);
+  const provider = new anchor.AnchorProvider(connection, wallet, {
+    commitment: "confirmed",
+  });
+
+  const client = new BlsContractClient({ provider });
   return client;
 }
 
@@ -55,5 +76,7 @@ module.exports = {
   readKeypair,
   getPath,
   getBlsRegisterClient,
+  getBlsContractClient,
   getProvider,
+  BlessTokenAccounts,
 };

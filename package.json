@@ -15,6 +15,7 @@
   "dependencies": {
     "@solana/web3.js": "1.98.2",
     "anchor": "^1.4.1",
+    "@blessnetwork/bless-contract": "^0.0.2",
     "@blessnetwork/node-verification-ledger": "^0.0.1",
     "chalk": "^4.0.0",
     "cli-box": "^6.0.10",
