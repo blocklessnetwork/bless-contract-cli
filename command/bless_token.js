@@ -14,7 +14,10 @@ const blesstokenCommand = new Command("blesstoken")
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
   )
-  .description("blesstoken: initial blesstoken registration");
+  .option("--payer <payer>", "the default payer: " + WALLET_PATH)
+  .description(
+    "blesstoken: initial blesstoken token mint and disptch bless token to wallet1-5 by rules. ",
+  );
 const wallets = new Argument(
   "wallets",
   "wallets: wallets is the wallet 1-5 that distrubuted the bless token by the contract, value should be base58 sperate by `,`. \n" +
@@ -33,7 +36,7 @@ blesstokenCommand
   .addArgument(mintAuthority)
   .action(async (wallets, mint, mintAuthority, options) => {
     options.cluster = options.cluster || "localnet";
-    options.signer = options.signer || getPath(WALLET_PATH);
+    options.signer = options.payer || getPath(WALLET_PATH);
     try {
       const keypair = readKeypair(options.signer);
       const client = getBlsContractClient(options.cluster, keypair);
