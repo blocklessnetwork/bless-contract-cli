@@ -16,7 +16,6 @@ const timeAcceptAdminCommand = new Command("accept-admin")
   )
   .description("accept-admin: accept the pending admin of the time contract");
 
-mint.required = true;
 timeAcceptAdminCommand.action(async (options) => {
   options.cluster = options.cluster || "localnet";
   options.signer = options.signer || getPath(WALLET_PATH);
