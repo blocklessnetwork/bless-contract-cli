@@ -10,6 +10,10 @@ const registerAcceptAdminCommand = new Command("accept-admin")
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
   )
+  .option(
+    "--signer <signer>",
+    "signer: the signer is the pending acount, default: " + WALLET_PATH,
+  )
   .description("accept-admin: accept the pending admin of the registration");
 
 registerAcceptAdminCommand.action(async (options) => {
