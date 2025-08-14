@@ -16,23 +16,12 @@ const timeAcceptAdminCommand = new Command("accept-admin")
   )
   .description("accept-admin: accept the pending admin of the time contract");
 
-const mint = new Argument(
-  "mint",
-  "mint: the mint is the mint token base58 value ",
-);
 mint.required = true;
-timeAcceptAdminCommand.addArgument(mint).action(async (mint, options) => {
+timeAcceptAdminCommand.action(async (options) => {
   options.cluster = options.cluster || "localnet";
   options.signer = options.signer || getPath(WALLET_PATH);
   try {
     const keypair = readKeypair(options.signer);
-    let mintPubkey = null;
-    try {
-      mintPubkey = new PublicKey(mint);
-    } catch (e) {
-      console.log(chalk.red("invaild mint parameter: " + e));
-      process.exit(1);
-    }
     const client = getBlsTimeContractClient(options.cluster, keypair);
     await client.blessTimeClient.acceptAdmin();
     console.log(chalk.green("time contract accept admin success."));
