@@ -1,6 +1,6 @@
 {
   "name": "@blessnetwork/blesscontract",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "The CLI tool for interacting with bless contract.",
   "main": "index.js",
   "bin": {
@@ -13,10 +13,11 @@
   "author": "bless",
   "license": "ISC",
   "dependencies": {
+    "@blessnetwork/bless-contract": "^0.0.3",
+    "@blessnetwork/bless-time-contract": "^0.0.2",
+    "@blessnetwork/node-verification-ledger": "^0.0.7",
     "@solana/web3.js": "1.98.2",
     "anchor": "^1.4.1",
-    "@blessnetwork/bless-contract": "^0.0.2",
-    "@blessnetwork/node-verification-ledger": "^0.0.1",
     "chalk": "^4.0.0",
     "cli-box": "^6.0.10",
     "commander": "12.1.0",

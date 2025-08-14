@@ -6,6 +6,7 @@ const chalk = require("chalk");
 const { Command } = require("commander");
 const registerCommand = require("./command/register.js");
 const blesstokenCommand = require("./command/bless_token.js");
+const timeCommand = require("./command/time.js");
 const analyzeCommand = require("./command/analyze.js");
 const program = new Command();
 
@@ -34,6 +35,7 @@ async function main() {
   program.addCommand(registerCommand);
   program.addCommand(blesstokenCommand);
   program.addCommand(analyzeCommand);
+  program.addCommand(timeCommand);
   await program.parseAsync(process.argv);
 }
 

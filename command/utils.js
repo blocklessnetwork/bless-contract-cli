@@ -11,6 +11,10 @@ const {
   BlsClient: BlsContractClient,
   BlessTokenAccounts,
 } = require("@blessnetwork/bless-contract");
+
+const {
+  BlsClient: BlsTimeContractClient,
+} = require("@blessnetwork/bless-time-contract");
 const getProvider = (input) => {
   let url = input;
   let cluster = "custom";
@@ -62,6 +66,21 @@ function getBlsContractClient(net, keypair) {
   return client;
 }
 
+function getBlsTimeContractClient(net, keypair) {
+  const connection = new anchor.web3.Connection(
+    getProvider(net).endpoint,
+    "confirmed",
+  );
+
+  const wallet = new anchor.Wallet(keypair);
+  const provider = new anchor.AnchorProvider(connection, wallet, {
+    commitment: "confirmed",
+  });
+
+  const client = new BlsTimeContractClient({ provider });
+  return client;
+}
+
 function getPath(s) {
   if (s == null) return null;
   const arr = s.split("/");
@@ -78,5 +97,6 @@ module.exports = {
   getBlsRegisterClient,
   getBlsContractClient,
   getProvider,
+  getBlsTimeContractClient,
   BlessTokenAccounts,
 };
