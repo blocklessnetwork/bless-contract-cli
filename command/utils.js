@@ -37,10 +37,7 @@ function readKeypair(keypairPath) {
 }
 
 function getBlsRegisterClient(net, keypair) {
-  const connection = new anchor.web3.Connection(
-    getProvider(net).endpoint,
-    "confirmed",
-  );
+  const connection = getConnection(net);
 
   const wallet = new anchor.Wallet(keypair);
   const provider = new anchor.AnchorProvider(connection, wallet, {
@@ -52,10 +49,7 @@ function getBlsRegisterClient(net, keypair) {
 }
 
 function getBlsContractClient(net, keypair) {
-  const connection = new anchor.web3.Connection(
-    getProvider(net).endpoint,
-    "confirmed",
-  );
+  const connection = getConnection(net);
 
   const wallet = new anchor.Wallet(keypair);
   const provider = new anchor.AnchorProvider(connection, wallet, {
@@ -66,11 +60,16 @@ function getBlsContractClient(net, keypair) {
   return client;
 }
 
-function getBlsTimeContractClient(net, keypair) {
+function getConnection(net) {
   const connection = new anchor.web3.Connection(
     getProvider(net).endpoint,
     "confirmed",
   );
+  return connection;
+}
+
+function getBlsTimeContractClient(net, keypair) {
+  const connection = getConnection(net);
 
   const wallet = new anchor.Wallet(keypair);
   const provider = new anchor.AnchorProvider(connection, wallet, {
@@ -94,6 +93,7 @@ function getPath(s) {
 module.exports = {
   readKeypair,
   getPath,
+  getConnection,
   getBlsRegisterClient,
   getBlsContractClient,
   getProvider,

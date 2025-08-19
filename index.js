@@ -8,6 +8,7 @@ const registerCommand = require("./command/register.js");
 const blesstokenCommand = require("./command/bless_token.js");
 const timeCommand = require("./command/time.js");
 const analyzeCommand = require("./command/analyze.js");
+const programCommand = require("./command/program.js");
 const program = new Command();
 
 async function main() {
@@ -36,6 +37,7 @@ async function main() {
   program.addCommand(blesstokenCommand);
   program.addCommand(analyzeCommand);
   program.addCommand(timeCommand);
+  program.addCommand(programCommand);
   await program.parseAsync(process.argv);
 }
 
