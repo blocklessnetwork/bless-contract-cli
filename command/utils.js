@@ -4,6 +4,7 @@ const { SOLANA_CLUSTERS } = require("../lib/constants");
 const path = require("node:path");
 const os = require("os");
 const fs = require("node:fs");
+
 const {
   BlsClient: RegisterClient,
 } = require("@blessnetwork/node-verification-ledger");

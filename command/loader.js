@@ -173,6 +173,62 @@ class Loader {
       data: encodeInstruction({ SetAuthority: {} }),
     });
   }
+
+  static async getDeployBufferTransaction(
+    connection,
+    payer,
+    data,
+    program,
+    bufferAccount,
+    authority,
+  ) {
+    const programSpace = 36; // UpgradeableLoaderState::program_len()
+    const programBalanceNeeded =
+      await connection.getMinimumBalanceForRentExemption(programSpace);
+    const [programDataKey, _nonce] = PublicKey.findProgramAddressSync(
+      [program.toBuffer()],
+      UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
+    );
+
+    const deployTransaction = new Transaction()
+      .add(
+        SystemProgram.createAccount({
+          fromPubkey: payer,
+          newAccountPubkey: program,
+          lamports: programBalanceNeeded,
+          space: programSpace,
+          programId: UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
+        }),
+      )
+      .add(
+        new TransactionInstruction({
+          keys: [
+            { pubkey: payer, isSigner: true, isWritable: true },
+            { pubkey: programDataKey, isSigner: false, isWritable: true },
+            { pubkey: program, isSigner: false, isWritable: true },
+            {
+              pubkey: bufferAccount,
+              isSigner: false,
+              isWritable: true,
+            },
+
+            { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+            { pubkey: SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
+            {
+              pubkey: SystemProgram.programId,
+              isSigner: false,
+              isWritable: false,
+            },
+            { pubkey: authority, isSigner: true, isWritable: false },
+          ],
+          programId: UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
+          data: encodeInstruction({
+            DeployWithMaxDataLen: { max_data_len: data.length * 3 },
+          }),
+        }),
+      );
+    return deployTransaction;
+  }
 }
 
 async function initBuffer(connection, payer, authority, data, bufferAccount) {
@@ -261,51 +317,14 @@ async function deployBuffer(
   data,
   bufferAccount,
 ) {
-  const programSpace = 36; // UpgradeableLoaderState::program_len()
-  const programBalanceNeeded =
-    await connection.getMinimumBalanceForRentExemption(programSpace);
-  const [programDataKey, _nonce] = PublicKey.findProgramAddressSync(
-    [program.publicKey.toBuffer()],
-    UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
+  const deployTransaction = await Loader.getDeployBufferTransaction(
+    connection,
+    payer.publicKey,
+    data,
+    program.publicKey,
+    bufferAccount.publicKey,
+    authority.publicKey,
   );
-
-  const deployTransaction = new Transaction()
-    .add(
-      SystemProgram.createAccount({
-        fromPubkey: payer.publicKey,
-        newAccountPubkey: program.publicKey,
-        lamports: programBalanceNeeded,
-        space: programSpace,
-        programId: UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
-      }),
-    )
-    .add(
-      new TransactionInstruction({
-        keys: [
-          { pubkey: payer.publicKey, isSigner: true, isWritable: true },
-          { pubkey: programDataKey, isSigner: false, isWritable: true },
-          { pubkey: program.publicKey, isSigner: false, isWritable: true },
-          {
-            pubkey: bufferAccount.publicKey,
-            isSigner: false,
-            isWritable: true,
-          },
-
-          { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-          { pubkey: SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
-          {
-            pubkey: SystemProgram.programId,
-            isSigner: false,
-            isWritable: false,
-          },
-          { pubkey: authority.publicKey, isSigner: true, isWritable: false },
-        ],
-        programId: UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
-        data: encodeInstruction({
-          DeployWithMaxDataLen: { max_data_len: data.length * 3 },
-        }),
-      }),
-    );
 
   await sendAndConfirmTransaction(
     connection,
