@@ -45,7 +45,13 @@ timeSetPendingAdminCommand
         process.exit(1);
       }
       if (pending != null) {
-        let pendingAdmin = new PublicKey(pending);
+        let pendingAdmin;
+        try {
+          pendingAdmin = new PublicKey(pending);
+        } catch (e) {
+          console.log(chalk.red("invalid pending-admin parameter: " + e));
+          process.exit(1);
+        }
         await client.blessTimeClient.setPendingAdminAccount(
           mintPubkey,
           pendingAdmin,

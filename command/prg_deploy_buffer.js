@@ -15,10 +15,10 @@ const deployBufferCommand = new Command("deploy-buffer")
   )
   .option(
     "--authority <authority>",
-    "the authority is the keypair, defualt: " + WALLET_PATH,
+    "the authority keypair file (default: " + WALLET_PATH + ")",
   )
   .option("--payer <payer>", "the default payer: " + WALLET_PATH)
-  .description("upgrade: upgrade the account");
+  .description("Deploy a program from the buffer account.");
 const programId = new Argument(
   "programId",
   "programId: the program id is the keypair",

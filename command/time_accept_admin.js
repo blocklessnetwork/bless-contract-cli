@@ -12,7 +12,7 @@ const timeAcceptAdminCommand = new Command("accept-admin")
   )
   .option(
     "--signer <signer>",
-    "signer: the signer is the pending acount: " + WALLET_PATH,
+    "signer: path to the pending admin keypair file. Default: " + WALLET_PATH,
   )
   .description("accept-admin: accept the pending admin of the time contract");
 

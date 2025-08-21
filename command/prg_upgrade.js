@@ -13,7 +13,7 @@ const upgradeCommand = new Command("upgrade")
   )
   .option(
     "--authority <authority>",
-    "the authority is the keypair, defualt: " + WALLET_PATH,
+    "the authority is the keypair, default: " + WALLET_PATH,
   )
   .option("--payer <payer>", "the default payer: " + WALLET_PATH)
   .description("upgrade: upgrade the account");
