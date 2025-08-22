@@ -10,6 +10,11 @@ const registerSetPendingAdminCommand = new Command("pending-admin")
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
   )
+  .option(
+    "--signer <signer>",
+    "signer: the signer is the admin of the registration, default: " +
+      WALLET_PATH,
+  )
   .description(
     "pending-admin: set/show the pending admin of the registration, the value is base58, if is empty, show the pending admin",
   );
@@ -40,7 +45,7 @@ registerSetPendingAdminCommand
       }
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("set the pause status of registration fail: " + e));
+      console.log(chalk.red("set the pending admin fail: " + e));
       process.exit(1);
     }
   });

@@ -4,6 +4,7 @@ const { SOLANA_CLUSTERS } = require("../lib/constants");
 const path = require("node:path");
 const os = require("os");
 const fs = require("node:fs");
+
 const {
   BlsClient: RegisterClient,
 } = require("@blessnetwork/node-verification-ledger");
@@ -11,6 +12,10 @@ const {
   BlsClient: BlsContractClient,
   BlessTokenAccounts,
 } = require("@blessnetwork/bless-contract");
+
+const {
+  BlsClient: BlsTimeContractClient,
+} = require("@blessnetwork/bless-time-contract");
 const getProvider = (input) => {
   let url = input;
   let cluster = "custom";
@@ -33,10 +38,7 @@ function readKeypair(keypairPath) {
 }
 
 function getBlsRegisterClient(net, keypair) {
-  const connection = new anchor.web3.Connection(
-    getProvider(net).endpoint,
-    "confirmed",
-  );
+  const connection = getConnection(net);
 
   const wallet = new anchor.Wallet(keypair);
   const provider = new anchor.AnchorProvider(connection, wallet, {
@@ -48,10 +50,7 @@ function getBlsRegisterClient(net, keypair) {
 }
 
 function getBlsContractClient(net, keypair) {
-  const connection = new anchor.web3.Connection(
-    getProvider(net).endpoint,
-    "confirmed",
-  );
+  const connection = getConnection(net);
 
   const wallet = new anchor.Wallet(keypair);
   const provider = new anchor.AnchorProvider(connection, wallet, {
@@ -59,6 +58,26 @@ function getBlsContractClient(net, keypair) {
   });
 
   const client = new BlsContractClient({ provider });
+  return client;
+}
+
+function getConnection(net) {
+  const connection = new anchor.web3.Connection(
+    getProvider(net).endpoint,
+    "confirmed",
+  );
+  return connection;
+}
+
+function getBlsTimeContractClient(net, keypair) {
+  const connection = getConnection(net);
+
+  const wallet = new anchor.Wallet(keypair);
+  const provider = new anchor.AnchorProvider(connection, wallet, {
+    commitment: "confirmed",
+  });
+
+  const client = new BlsTimeContractClient({ provider });
   return client;
 }
 
@@ -75,8 +94,10 @@ function getPath(s) {
 module.exports = {
   readKeypair,
   getPath,
+  getConnection,
   getBlsRegisterClient,
   getBlsContractClient,
   getProvider,
+  getBlsTimeContractClient,
   BlessTokenAccounts,
 };
