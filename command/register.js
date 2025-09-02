@@ -1,4 +1,4 @@
-const { Command, Argument } = require("commander");
+const { Command } = require("commander");
 const regInitCommand = require("./reg_init");
 const registerSetDeadlineCommand = require("./reg_set_deadline");
 const registerDoCommand = require("./reg_register");

@@ -81,6 +81,20 @@ function getBlsTimeContractClient(net, keypair) {
   return client;
 }
 
+// display the spent time
+const formatTime = (seconds) => {
+  const h = Math.floor(seconds / 360);
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  if (h != 0) {
+    return `${m}m:${s.toString().padStart(2, "0")}sec`;
+  } else if (m != 0) {
+    return `${m}m:${s.toString().padStart(2, "0")}sec`;
+  } else {
+    return `${s.toString().padStart(2, "0")}sec`;
+  }
+};
+
 function getPath(s) {
   if (s == null) return null;
   const arr = s.split("/");
@@ -93,6 +107,7 @@ function getPath(s) {
 
 module.exports = {
   readKeypair,
+  formatTime,
   getPath,
   getConnection,
   getBlsRegisterClient,

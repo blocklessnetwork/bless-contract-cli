@@ -16,12 +16,17 @@
     "@blessnetwork/bless-contract": "^0.0.3",
     "@blessnetwork/bless-time-contract": "^0.0.2",
     "@blessnetwork/node-verification-ledger": "^0.0.7",
-    "@solana/web3.js": "1.98.2",
+    "@coral-xyz/anchor": "^0.31.1",
+    "@solana/web3.js": "^1.98.2",
     "anchor": "^1.4.1",
     "chalk": "^4.0.0",
     "cli-box": "^6.0.10",
+    "cli-progress": "^3.12.0",
     "commander": "12.1.0",
     "ed25519": "^0.0.5",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.5.2",
+    "stream-json": "^1.9.1",
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
