@@ -15,10 +15,12 @@ const fs = require("node:fs");
 const {
   BlsClient: RegisterClient,
 } = require("@blessnetwork/node-verification-ledger");
+
 const {
   BlsClient: BlsContractClient,
   BlessTokenAccounts,
-} = require("@blessnetwork/bless-contract");
+  setDevProgramId,
+} = require("/Users/join/Works/bless-contract");
 
 const {
   BlsClient: BlsTimeContractClient,
@@ -56,7 +58,8 @@ function getBlsRegisterClient(net, keypair) {
   return client;
 }
 
-function getBlsContractClient(net, keypair) {
+function getBlsContractClient(net, keypair, programId) {
+  if (programId != null) setDevProgramId(new PublicKey(programId));
   const connection = getConnection(net);
 
   const wallet = new anchor.Wallet(keypair);

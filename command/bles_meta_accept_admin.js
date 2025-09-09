@@ -18,6 +18,10 @@ const blessMetaAcceptAdminCommand = new Command("accept-admin")
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
   )
   .option(
+    "--programId <programId>",
+    "Program ID: Specify the program ID when working on devnet, testnet, or localnet; it will not work on mainnet.",
+  )
+  .option(
     "--signer <signer>",
     "signer: the signer is the payer of the transaction, default: " +
       WALLET_PATH,
@@ -51,7 +55,11 @@ blessMetaAcceptAdminCommand
     options.squads = options.squads || false;
     try {
       const keypair = readKeypair(options.signer);
-      const client = getBlsContractClient(options.cluster, keypair);
+      const client = getBlsContractClient(
+        options.cluster,
+        keypair,
+        options.programId,
+      );
       let mintPubkey = new PublicKey(mint);
       const state =
         await client.blessTokenClient.getBlessTokenMetaState(mintPubkey);
