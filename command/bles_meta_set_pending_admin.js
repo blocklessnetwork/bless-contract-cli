@@ -98,9 +98,6 @@ blessMetaSetPendingAdminCommand
           instructions,
           keypair,
         );
-        console.log(
-          await client.blessTokenClient.getBlessTokenMetaState(mintPubkey),
-        );
         console.log("bless meta set pending admin transaction created, " + itx);
       } else {
         options.admin = options.admin || getPath(WALLET_PATH);

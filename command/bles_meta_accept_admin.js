@@ -67,7 +67,7 @@ blessMetaAcceptAdminCommand
           new anchor.Wallet(keypair),
         );
         const pendingAdmin = new PublicKey(pending);
-        if (state.admin.toBase58() != pendingAdmin.toBase58()) {
+        if (state.pendingAdmin.toBase58() != pendingAdmin.toBase58()) {
           console.log(
             chalk.red(
               "accept admin is denied, pending admin is not matched, the state pending admin is " +
@@ -95,7 +95,9 @@ blessMetaAcceptAdminCommand
         console.log("bless meta accept admin transaction created, " + itx);
       } else {
         const pendingAdmin = readKeypair(pending);
-        if (state.admin.toBase58() != pendingAdmin.publicKey.toBase58()) {
+        if (
+          state.pendingAdmin.toBase58() != pendingAdmin.publicKey.toBase58()
+        ) {
           console.log(
             chalk.red(
               "accept admin is denied, pending admin is not matched, the state pending admin is " +
