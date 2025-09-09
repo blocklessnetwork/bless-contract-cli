@@ -29,7 +29,7 @@ const blessMetaSetPendingAdminCommand = new Command("pending-admin")
   )
   .option(
     "--squads <true/false>",
-    "squads: if is_squads true, use squads to signature, default is false.",
+    "squads: if squads true, use squads to signature, default is false.",
   )
   .description(
     "pending-admin: set the pending admin of the bless meta, the value is base58",

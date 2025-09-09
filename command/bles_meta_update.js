@@ -26,7 +26,7 @@ const blessMetaUpdateCommand = new Command("update")
   .option("--multisig <multisig>", "multisig:  the multisig of the bless meta")
   .option(
     "--squads <true/false>",
-    "squads: if is_squads true, use squads to signature, default is false.",
+    "squads: if squads true, use squads to signature, default is false.",
   )
   .option(
     "--admin <admin>",
