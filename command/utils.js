@@ -18,7 +18,7 @@ const {
 const {
   BlsClient: BlsContractClient,
   BlessTokenAccounts,
-} = require("/Users/join/Works/bless-contract");
+} = require("@blessnetwork/bless-contract");
 
 const {
   BlsClient: BlsTimeContractClient,
