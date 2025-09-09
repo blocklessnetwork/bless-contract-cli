@@ -18,6 +18,7 @@
     "@blessnetwork/node-verification-ledger": "^0.0.7",
     "@coral-xyz/anchor": "^0.31.1",
     "@solana/web3.js": "^1.98.2",
+    "@sqds/sdk": "^2.0.4",
     "anchor": "^1.4.1",
     "chalk": "^4.0.0",
     "cli-box": "^6.0.10",
