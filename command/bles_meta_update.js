@@ -1,7 +1,5 @@
 const { Command, Argument } = require("commander");
 const chalk = require("chalk");
-const Squads = require("@sqds/sdk");
-const anchor = require("@coral-xyz/anchor");
 const { WALLET_PATH } = require("../lib/constants");
 const {
   getBlsContractClient,
@@ -9,7 +7,6 @@ const {
   readKeypair,
   getMetadata,
   sendTransaction,
-  createSquadTransactionInstructions,
 } = require("./utils");
 const { PublicKey } = require("@solana/web3.js");
 
@@ -52,23 +49,17 @@ blessMetaUpdateCommand
     options.signer = options.signer || getPath(WALLET_PATH);
     options.squads = options.squads || false;
     try {
+      const metaJson = await getMetadata(uri);
       const keypair = readKeypair(options.signer);
       const client = getBlsContractClient(
         options.cluster,
         keypair,
         options.programId,
       );
-
-      const metaJson = await getMetadata(uri);
       let mintPubkey = new PublicKey(mint);
       const state =
         await client.blessTokenClient.getBlessTokenMetaState(mintPubkey);
       if (options.squads) {
-        if (options.multisig == null) {
-          console.log(chalk.red("multisig is required."));
-          process.exit(1);
-        }
-        const multisigPda = new PublicKey(options.multisig);
         if (options.admin == null) {
           console.log(chalk.red("admin is required."));
           process.exit(1);
@@ -83,10 +74,6 @@ blessMetaUpdateCommand
           );
           process.exit(1);
         }
-        const squads = Squads.default.endpoint(
-          client.connection.rpcEndpoint,
-          new anchor.Wallet(keypair),
-        );
         const tx = await client.blessTokenClient.getUpdateMetadataTx(
           mintPubkey,
           adminPubkey,
@@ -97,19 +84,13 @@ blessMetaUpdateCommand
           },
           { signer: adminPubkey },
         );
-        const ix = tx.instructions[0];
-        const instructions = await createSquadTransactionInstructions({
-          squads,
-          multisigPda,
-          ixs: [ix],
-        });
         const itx = await sendTransaction(
           client.connection,
-          instructions,
+          tx.instructions,
           keypair,
         );
         console.log(
-          "bless token metadata account update transaction created, " + itx,
+          "bless token metadata account update transaction: \n" + itx,
         );
       } else {
         options.admin = options.admin || getPath(WALLET_PATH);

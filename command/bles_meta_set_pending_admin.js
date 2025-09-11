@@ -1,14 +1,11 @@
 const { Command, Argument } = require("commander");
 const chalk = require("chalk");
-const Squads = require("@sqds/sdk");
-const anchor = require("@coral-xyz/anchor");
 const { WALLET_PATH } = require("../lib/constants");
 const {
   getBlsContractClient,
   getPath,
   readKeypair,
   sendTransaction,
-  createSquadTransactionInstructions,
 } = require("./utils");
 const { PublicKey } = require("@solana/web3.js");
 
@@ -26,7 +23,6 @@ const blessMetaSetPendingAdminCommand = new Command("pending-admin")
     "signer: the signer is the payer of the bless meta, default: " +
       WALLET_PATH,
   )
-  .option("--multisig <multisig>", "multisig:  the multisig of the bless meta")
   .option(
     "--admin <admin>",
     "admin: the admin of the bless meta, default: " + WALLET_PATH,
@@ -80,33 +76,20 @@ blessMetaSetPendingAdminCommand
           );
           process.exit(1);
         }
-        if (options.multisig == null) {
-          console.log(chalk.red("multisig is required."));
-          process.exit(1);
-        }
-        const multisigPda = new PublicKey(options.multisig);
-        const squads = Squads.default.endpoint(
-          client.connection.rpcEndpoint,
-          new anchor.Wallet(keypair),
-        );
         const tx = await client.blessTokenClient.getSetPendingAdminAccountTx(
           mintPubkey,
           adminPubkey,
           pendingAdmin,
           { signer: adminPubkey },
         );
-        const ix = tx.instructions[0];
-        const instructions = await createSquadTransactionInstructions({
-          squads,
-          multisigPda,
-          ixs: [ix],
-        });
         const itx = await sendTransaction(
           client.connection,
-          instructions,
+          tx.instructions,
           keypair,
         );
-        console.log("bless meta set pending admin transaction created, " + itx);
+        console.log(
+          "bless meta set pending admin transaction created: \n" + itx,
+        );
       } else {
         options.admin = options.admin || getPath(WALLET_PATH);
         const adminKeypair = readKeypair(options.admin);

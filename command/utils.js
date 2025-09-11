@@ -11,6 +11,7 @@ const Squads = require("@sqds/sdk");
 const path = require("node:path");
 const os = require("os");
 const fs = require("node:fs");
+const multisig = require("@sqds/multisig");
 
 const {
   BlsClient: RegisterClient,
@@ -25,6 +26,7 @@ const {
 const {
   BlsClient: BlsTimeContractClient,
 } = require("@blessnetwork/bless-time-contract");
+const { bs58 } = require("@coral-xyz/anchor/dist/cjs/utils/bytes");
 const getProvider = (input) => {
   let url = input;
   let cluster = "custom";
@@ -153,6 +155,19 @@ function getPath(s) {
   return path.join(...arr);
 }
 
+const getVaultAddressIndex = (multisigPda, vaultPda) => {
+  const vault = vaultPda.toBase58();
+  for (let i = 0; i <= 10; i++) {
+    const pda = multisig.getVaultPda({
+      index: i,
+      multisigPda: new PublicKey(multisigPda),
+      programId: multisig.PROGRAM_ID,
+    })[0];
+    if (pda.toBase58() == vault) return i;
+  }
+  throw Error("verify vault fail.");
+};
+
 const sendTransaction = async (connection, instructions, payer) => {
   const blockhash = (await connection.getLatestBlockhash()).blockhash;
 
@@ -160,10 +175,86 @@ const sendTransaction = async (connection, instructions, payer) => {
     instructions,
     payerKey: payer.publicKey,
     recentBlockhash: blockhash,
-  }).compileToV0Message();
+  }).compileToLegacyMessage();
+  return bs58.encode(wrappedMessage.serialize());
+};
 
-  const transaction = new VersionedTransaction(wrappedMessage);
-  transaction.sign([payer]);
+async function loadLookupTables(connection, transactionMessage) {
+  const addressLookupTableAccounts = [];
+  const { addressTableLookups } = transactionMessage;
+  if (addressTableLookups.length > 0) {
+    for (const addressTableLookup of addressTableLookups) {
+      const { value } = await connection.getAddressLookupTable(
+        addressTableLookup.accountKey,
+      );
+      if (!value) continue;
+
+      addressLookupTableAccounts.push(value);
+    }
+  }
+  return addressLookupTableAccounts;
+}
+
+const sendInstructionsSquadsV4 = async ({
+  connection,
+  multisigPda,
+  vaultPda,
+  member,
+  wallet,
+  ixs,
+}) => {
+  const vaultIndex = getVaultAddressIndex(multisigPda, vaultPda);
+
+  const multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
+    // @ts-ignore
+    connection,
+    new PublicKey(multisigPda),
+  );
+
+  const blockhash = (await connection.getLatestBlockhash()).blockhash;
+  const transactionMessage = new TransactionMessage({
+    instructions: ixs,
+    payerKey: wallet.publicKey,
+    recentBlockhash: blockhash,
+  });
+
+  const transactionIndex = Number(multisigInfo.transactionIndex) + 1;
+  const transactionIndexBN = BigInt(transactionIndex);
+  const multisigTransactionIx = multisig.instructions.vaultTransactionCreate({
+    multisigPda: multisigPda,
+    creator: member,
+    ephemeralSigners: 0,
+    // @ts-ignore
+    transactionMessage: transactionMessage,
+    transactionIndex: transactionIndexBN,
+    addressLookupTableAccounts: [],
+    rentPayer: wallet.publicKey,
+    vaultIndex: vaultIndex,
+    programId: multisig.PROGRAM_ID,
+  });
+
+  const proposalIx = multisig.instructions.proposalCreate({
+    multisigPda: new PublicKey(multisigPda),
+    creator: member,
+    isDraft: false,
+    transactionIndex: transactionIndexBN,
+    rentPayer: wallet.publicKey,
+    programId: multisig.PROGRAM_ID,
+  });
+  const approveIx = multisig.instructions.proposalApprove({
+    multisigPda: multisigPda,
+    member: member,
+    transactionIndex: transactionIndexBN,
+    programId: multisig.PROGRAM_ID,
+  });
+
+  const message = new TransactionMessage({
+    instructions: [multisigTransactionIx, proposalIx, approveIx],
+    payerKey: wallet.publicKey,
+    recentBlockhash: blockhash,
+  }).compileToV0Message();
+  const transaction = new VersionedTransaction(message);
+  transaction.sign([wallet]);
   return await connection.sendTransaction(transaction);
 };
 
@@ -211,6 +302,7 @@ module.exports = {
   formatTime,
   getPath,
   getConnection,
+  sendInstructionsSquadsV4,
   sendTransaction,
   getMetadata,
   createSquadTransactionInstructions,
