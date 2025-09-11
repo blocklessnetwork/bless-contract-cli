@@ -13,7 +13,7 @@ const {
 } = require("./utils");
 const { PublicKey } = require("@solana/web3.js");
 
-const blessMetaUpdateCommand = new Command("update")
+const blessMetaCreateCommand = new Command("create")
   .option(
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
@@ -44,7 +44,7 @@ mint.required = true;
 const uri = new Argument("uri", "the meta data uri.");
 uri.required = true;
 
-blessMetaUpdateCommand
+blessMetaCreateCommand
   .addArgument(mint)
   .addArgument(uri)
   .action(async (mint, uri, options) => {
@@ -114,13 +114,26 @@ blessMetaUpdateCommand
       } else {
         options.admin = options.admin || getPath(WALLET_PATH);
         const adminKeypair = readKeypair(options.admin);
-
+        if (state.admin.toBase58() != adminKeypair.publicKey.toBase58()) {
+          console.log(
+            chalk.red(
+              "create is denied, admin is not matched, the state admin is " +
+                state.admin.toBase58(),
+            ),
+          );
+          process.exit(1);
+        }
         await client.blessTokenClient.createMetadata(
           mintPubkey,
           adminKeypair.publicKey,
           {
+            name: metaJson.name,
+            symbol: metaJson.symbol,
+            uri,
+          },
+          {
             signer: keypair.publicKey,
-            signerKeypair: [keypair],
+            signerKeypair: [keypair, adminKeypair],
           },
         );
       }
@@ -132,4 +145,4 @@ blessMetaUpdateCommand
     }
   });
 
-module.exports = blessMetaUpdateCommand;
+module.exports = blessMetaCreateCommand;

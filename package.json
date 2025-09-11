@@ -13,7 +13,7 @@
   "author": "bless",
   "license": "ISC",
   "dependencies": {
-    "@blessnetwork/bless-contract": "^0.0.3",
+    "@blessnetwork/bless-contract": "^0.0.5",
     "@blessnetwork/bless-time-contract": "^0.0.2",
     "@blessnetwork/node-verification-ledger": "^0.0.7",
     "@coral-xyz/anchor": "^0.31.1",

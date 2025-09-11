@@ -1,6 +1,7 @@
 const { Command, Argument } = require("commander");
 const chalk = require("chalk");
 const { WALLET_PATH } = require("../lib/constants");
+const { PublicKey } = require("@solana/web3.js");
 const { getBlsContractClient, getPath, readKeypair } = require("./utils");
 
 const blessMetaInitCommand = new Command("init")
@@ -26,6 +27,7 @@ blessMetaInitCommand.addArgument(mint).action(async (mint, options) => {
   options.signer = options.signer || getPath(WALLET_PATH);
   options.squads = options.squads || false;
   try {
+    let mintPubkey = new PublicKey(mint);
     const keypair = readKeypair(options.signer);
     const client = getBlsContractClient(
       options.cluster,
@@ -33,7 +35,6 @@ blessMetaInitCommand.addArgument(mint).action(async (mint, options) => {
       options.programId,
     );
 
-    options.admin = options.admin || getPath(WALLET_PATH);
     await client.blessTokenClient.initialBlessTokenMetaState(mintPubkey);
     console.log(chalk.green("bless token metadata account initial success."));
     process.exit(0);
