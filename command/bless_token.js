@@ -14,6 +14,10 @@ const blesstokenCommand = new Command("blesstoken")
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
   )
+  .option(
+    "--programId <programId>",
+    "Program ID: Specify the program ID when working on devnet, testnet, or localnet; it will not work on mainnet.",
+  )
   .option("--payer <payer>", "the default payer: " + WALLET_PATH)
   .description(
     "blesstoken: initial blesstoken token mint and disptch bless token to wallet1-5 by rules. ",
@@ -39,7 +43,11 @@ blesstokenCommand
     options.signer = options.payer || getPath(WALLET_PATH);
     try {
       const keypair = readKeypair(options.signer);
-      const client = getBlsContractClient(options.cluster, keypair);
+      const client = getBlsContractClient(
+        options.cluster,
+        keypair,
+        options.programId,
+      );
       if (wallets == null || wallets == "") {
         console.log(chalk.red("invalid wallet parameter."));
         process.exit(1);

@@ -1,4 +1,4 @@
-const { Keypair } = require("@solana/web3.js");
+const { Keypair, PublicKey, TransactionMessage } = require("@solana/web3.js");
 const anchor = require("@coral-xyz/anchor");
 const { SOLANA_CLUSTERS } = require("../lib/constants");
 const path = require("node:path");
@@ -8,14 +8,17 @@ const fs = require("node:fs");
 const {
   BlsClient: RegisterClient,
 } = require("@blessnetwork/node-verification-ledger");
+
 const {
   BlsClient: BlsContractClient,
   BlessTokenAccounts,
+  setDevProgramId,
 } = require("@blessnetwork/bless-contract");
 
 const {
   BlsClient: BlsTimeContractClient,
 } = require("@blessnetwork/bless-time-contract");
+const { bs58 } = require("@coral-xyz/anchor/dist/cjs/utils/bytes");
 const getProvider = (input) => {
   let url = input;
   let cluster = "custom";
@@ -49,7 +52,8 @@ function getBlsRegisterClient(net, keypair) {
   return client;
 }
 
-function getBlsContractClient(net, keypair) {
+function getBlsContractClient(net, keypair, programId) {
+  if (programId != null) setDevProgramId(new PublicKey(programId));
   const connection = getConnection(net);
 
   const wallet = new anchor.Wallet(keypair);
@@ -81,6 +85,49 @@ function getBlsTimeContractClient(net, keypair) {
   return client;
 }
 
+const getMetadata = async (uri) => {
+  const resp = await fetch(uri);
+  const metaJson = await resp.json();
+  if (
+    metaJson.name == null ||
+    typeof metaJson.name != "string" ||
+    metaJson.name == ""
+  ) {
+    throw Error("name is invalid.");
+  }
+
+  if (
+    metaJson.symbol == null ||
+    typeof metaJson.symbol != "string" ||
+    metaJson.symbol == ""
+  ) {
+    throw Error("symbol is invalid.");
+  }
+
+  if (
+    metaJson.image == null ||
+    typeof metaJson.image != "string" ||
+    metaJson.image == ""
+  ) {
+    throw Error("image is invalid.");
+  }
+  return metaJson;
+};
+
+// display the spent time
+const formatTime = (seconds) => {
+  const h = Math.floor(seconds / 360);
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  if (h != 0) {
+    return `${m}m:${s.toString().padStart(2, "0")}sec`;
+  } else if (m != 0) {
+    return `${m}m:${s.toString().padStart(2, "0")}sec`;
+  } else {
+    return `${s.toString().padStart(2, "0")}sec`;
+  }
+};
+
 function getPath(s) {
   if (s == null) return null;
   const arr = s.split("/");
@@ -91,10 +138,24 @@ function getPath(s) {
   return path.join(...arr);
 }
 
+const bs58Message = async (connection, instructions, payer) => {
+  const blockhash = (await connection.getLatestBlockhash()).blockhash;
+
+  const wrappedMessage = new TransactionMessage({
+    instructions,
+    payerKey: payer.publicKey,
+    recentBlockhash: blockhash,
+  }).compileToLegacyMessage();
+  return bs58.encode(wrappedMessage.serialize());
+};
+
 module.exports = {
   readKeypair,
+  formatTime,
   getPath,
   getConnection,
+  bs58Message,
+  getMetadata,
   getBlsRegisterClient,
   getBlsContractClient,
   getProvider,
