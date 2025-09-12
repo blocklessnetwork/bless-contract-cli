@@ -1,17 +1,9 @@
-const {
-  Keypair,
-  VersionedTransaction,
-  PublicKey,
-  TransactionMessage,
-  TransactionInstruction,
-} = require("@solana/web3.js");
+const { Keypair, PublicKey, TransactionMessage } = require("@solana/web3.js");
 const anchor = require("@coral-xyz/anchor");
 const { SOLANA_CLUSTERS } = require("../lib/constants");
-const Squads = require("@sqds/sdk");
 const path = require("node:path");
 const os = require("os");
 const fs = require("node:fs");
-const multisig = require("@sqds/multisig");
 
 const {
   BlsClient: RegisterClient,
@@ -136,15 +128,6 @@ const formatTime = (seconds) => {
   }
 };
 
-function addInstruction(squads, txPDA, ix) {
-  const txIx = new anchor.web3.TransactionInstruction({
-    keys: ix.keys,
-    programId: ix.programId,
-    data: ix.data,
-  });
-  return squads.addInstruction(txPDA, txIx);
-}
-
 function getPath(s) {
   if (s == null) return null;
   const arr = s.split("/");
@@ -155,20 +138,7 @@ function getPath(s) {
   return path.join(...arr);
 }
 
-const getVaultAddressIndex = (multisigPda, vaultPda) => {
-  const vault = vaultPda.toBase58();
-  for (let i = 0; i <= 10; i++) {
-    const pda = multisig.getVaultPda({
-      index: i,
-      multisigPda: new PublicKey(multisigPda),
-      programId: multisig.PROGRAM_ID,
-    })[0];
-    if (pda.toBase58() == vault) return i;
-  }
-  throw Error("verify vault fail.");
-};
-
-const sendTransaction = async (connection, instructions, payer) => {
+const bs58Message = async (connection, instructions, payer) => {
   const blockhash = (await connection.getLatestBlockhash()).blockhash;
 
   const wrappedMessage = new TransactionMessage({
@@ -179,136 +149,15 @@ const sendTransaction = async (connection, instructions, payer) => {
   return bs58.encode(wrappedMessage.serialize());
 };
 
-async function loadLookupTables(connection, transactionMessage) {
-  const addressLookupTableAccounts = [];
-  const { addressTableLookups } = transactionMessage;
-  if (addressTableLookups.length > 0) {
-    for (const addressTableLookup of addressTableLookups) {
-      const { value } = await connection.getAddressLookupTable(
-        addressTableLookup.accountKey,
-      );
-      if (!value) continue;
-
-      addressLookupTableAccounts.push(value);
-    }
-  }
-  return addressLookupTableAccounts;
-}
-
-const sendInstructionsSquadsV4 = async ({
-  connection,
-  multisigPda,
-  vaultPda,
-  member,
-  wallet,
-  ixs,
-}) => {
-  const vaultIndex = getVaultAddressIndex(multisigPda, vaultPda);
-
-  const multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
-    // @ts-ignore
-    connection,
-    new PublicKey(multisigPda),
-  );
-
-  const blockhash = (await connection.getLatestBlockhash()).blockhash;
-  const transactionMessage = new TransactionMessage({
-    instructions: ixs,
-    payerKey: wallet.publicKey,
-    recentBlockhash: blockhash,
-  });
-
-  const transactionIndex = Number(multisigInfo.transactionIndex) + 1;
-  const transactionIndexBN = BigInt(transactionIndex);
-  const multisigTransactionIx = multisig.instructions.vaultTransactionCreate({
-    multisigPda: multisigPda,
-    creator: member,
-    ephemeralSigners: 0,
-    // @ts-ignore
-    transactionMessage: transactionMessage,
-    transactionIndex: transactionIndexBN,
-    addressLookupTableAccounts: [],
-    rentPayer: wallet.publicKey,
-    vaultIndex: vaultIndex,
-    programId: multisig.PROGRAM_ID,
-  });
-
-  const proposalIx = multisig.instructions.proposalCreate({
-    multisigPda: new PublicKey(multisigPda),
-    creator: member,
-    isDraft: false,
-    transactionIndex: transactionIndexBN,
-    rentPayer: wallet.publicKey,
-    programId: multisig.PROGRAM_ID,
-  });
-  const approveIx = multisig.instructions.proposalApprove({
-    multisigPda: multisigPda,
-    member: member,
-    transactionIndex: transactionIndexBN,
-    programId: multisig.PROGRAM_ID,
-  });
-
-  const message = new TransactionMessage({
-    instructions: [multisigTransactionIx, proposalIx, approveIx],
-    payerKey: wallet.publicKey,
-    recentBlockhash: blockhash,
-  }).compileToV0Message();
-  const transaction = new VersionedTransaction(message);
-  transaction.sign([wallet]);
-  return await connection.sendTransaction(transaction);
-};
-
-const createSquadTransactionInstructions = async ({
-  squads,
-  multisigPda,
-  ixs,
-}) => {
-  const instructions = [];
-
-  const nextTxIndex = await squads.getNextTransactionIndex(multisigPda);
-  const [txPDA] = Squads.getTxPDA(
-    multisigPda,
-    new anchor.BN(nextTxIndex),
-    Squads.DEFAULT_MULTISIG_PROGRAM_ID,
-  );
-  instructions.push(
-    await squads.buildCreateTransaction(multisigPda, 1, nextTxIndex),
-  );
-
-  for (const ix of ixs) {
-    // hack the Struct,let ce to public encode.
-    const keys = ix.keys.map((key) => {
-      const pubkey = new PublicKey(key.pubkey.toBase58());
-      key.pubkey = pubkey;
-      return key;
-    });
-    const newIx = new TransactionInstruction({
-      keys,
-      programId: new PublicKey(ix.programId.toBase58()),
-      data: Buffer.from(ix.data),
-    });
-    const i = ixs.indexOf(ix);
-    instructions.push(
-      await squads.buildAddInstruction(multisigPda, txPDA, newIx, i + 1),
-    );
-  }
-  instructions.push(await squads.buildActivateTransaction(multisigPda, txPDA));
-  instructions.push(await squads.buildApproveTransaction(multisigPda, txPDA));
-  return instructions;
-};
-
 module.exports = {
   readKeypair,
   formatTime,
   getPath,
   getConnection,
-  sendInstructionsSquadsV4,
-  sendTransaction,
+  bs58Message,
   getMetadata,
-  createSquadTransactionInstructions,
   getBlsRegisterClient,
   getBlsContractClient,
-  addInstruction,
   getProvider,
   getBlsTimeContractClient,
   BlessTokenAccounts,

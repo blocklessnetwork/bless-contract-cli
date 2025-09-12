@@ -5,7 +5,7 @@ const {
   getBlsContractClient,
   getPath,
   readKeypair,
-  sendTransaction,
+  bs58Message,
 } = require("./utils");
 const { PublicKey } = require("@solana/web3.js");
 
@@ -82,7 +82,7 @@ blessMetaSetPendingAdminCommand
           pendingAdmin,
           { signer: adminPubkey },
         );
-        const itx = await sendTransaction(
+        const itx = await bs58Message(
           client.connection,
           tx.instructions,
           keypair,

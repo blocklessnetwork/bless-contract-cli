@@ -6,7 +6,7 @@ const {
   getPath,
   readKeypair,
   getMetadata,
-  sendTransaction,
+  bs58Message,
 } = require("./utils");
 const { PublicKey } = require("@solana/web3.js");
 
@@ -84,7 +84,7 @@ blessMetaUpdateCommand
           },
           { signer: adminPubkey },
         );
-        const itx = await sendTransaction(
+        const itx = await bs58Message(
           client.connection,
           tx.instructions,
           keypair,

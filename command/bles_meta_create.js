@@ -8,8 +8,7 @@ const {
   getPath,
   readKeypair,
   getMetadata,
-  sendTransaction,
-  createSquadTransactionInstructions,
+  bs58Message,
 } = require("./utils");
 const { PublicKey } = require("@solana/web3.js");
 
@@ -97,15 +96,9 @@ blessMetaCreateCommand
           },
           { signer: adminPubkey },
         );
-        const ix = tx.instructions[0];
-        const instructions = await createSquadTransactionInstructions({
-          squads,
-          multisigPda,
-          ixs: [ix],
-        });
-        const itx = await sendTransaction(
+        const itx = await bs58Message(
           client.connection,
-          instructions,
+          tx.instructions,
           keypair,
         );
         console.log(

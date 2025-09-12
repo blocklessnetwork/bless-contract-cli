@@ -5,9 +5,7 @@ const {
   getBlsContractClient,
   getPath,
   readKeypair,
-  sendTransaction,
-  sendInstructionsSquadsV4,
-  createSquadTransactionInstructions,
+  bs58Message,
 } = require("./utils");
 const { PublicKey } = require("@solana/web3.js");
 
@@ -61,7 +59,6 @@ blessMetaAcceptAdminCommand
       let mintPubkey = new PublicKey(mint);
       const state =
         await client.blessTokenClient.getBlessTokenMetaState(mintPubkey);
-      console.log(state);
       if (options.squads) {
         const pendingAdmin = new PublicKey(pending);
         if (state.pendingAdmin.toBase58() != pendingAdmin.toBase58()) {
@@ -78,7 +75,7 @@ blessMetaAcceptAdminCommand
           pendingAdmin,
           { signer: pendingAdmin },
         );
-        const itx = await sendTransaction(
+        const itx = await bs58Message(
           client.connection,
           tx.instructions,
           keypair,
