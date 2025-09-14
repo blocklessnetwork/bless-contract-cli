@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@blessnetwork/bless-contract": "^0.0.5",
-    "@blessnetwork/bless-time-contract": "^0.0.2",
+    "@blessnetwork/bless-time-contract": "^0.0.3",
     "@blessnetwork/node-verification-ledger": "^0.0.7",
     "@coral-xyz/anchor": "^0.31.1",
     "@solana/web3.js": "^1.98.2",
