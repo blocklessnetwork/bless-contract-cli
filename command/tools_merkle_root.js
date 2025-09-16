@@ -112,6 +112,13 @@ genMerkleTreeCommand.addArgument(file).action(async (file, options) => {
       });
       writeStream.on("finish", () => {
         bar.update(parseInt(100));
+        fs.writeFile(
+          `${new PublicKey(tree.getRoot()).toBase58()}`,
+          "This is merkle root",
+          (e) => {
+            console.error(e);
+          },
+        );
         console.log(
           chalk.green(
             "\nMerkle tree root:" +
