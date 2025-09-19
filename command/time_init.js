@@ -12,6 +12,10 @@ const timeInitCommand = new Command("init")
     "--signer <signer>",
     "the signer is the admin of  the time contract: " + WALLET_PATH,
   )
+  .option(
+    "--programId <programId>",
+    "Program ID: Specify the program ID when working on devnet, testnet, or localnet; it will not work on mainnet.",
+  )
   .description("initial: initial the time state");
 const mint = new Argument(
   "mint",
@@ -23,7 +27,11 @@ timeInitCommand.addArgument(mint).action(async (mint, options) => {
   options.signer = options.signer || getPath(WALLET_PATH);
   try {
     const keypair = readKeypair(options.signer);
-    const client = getBlsTimeContractClient(options.cluster, keypair);
+    const client = getBlsTimeContractClient(
+      options.cluster,
+      keypair,
+      options.programId,
+    );
     let mintPubkey = null;
     try {
       mintPubkey = new PublicKey(mint);

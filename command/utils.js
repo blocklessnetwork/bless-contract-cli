@@ -12,11 +12,12 @@ const {
 const {
   BlsClient: BlsContractClient,
   BlessTokenAccounts,
-  setDevProgramId,
+  setDevProgramId: setBlsContractDevProgramId,
 } = require("@blessnetwork/bless-contract");
 
 const {
   BlsClient: BlsTimeContractClient,
+  setDevProgramId: setBlsTimeContractDevProgramId,
 } = require("@blessnetwork/bless-time-contract");
 const { bs58 } = require("@coral-xyz/anchor/dist/cjs/utils/bytes");
 const getProvider = (input) => {
@@ -53,7 +54,7 @@ function getBlsRegisterClient(net, keypair) {
 }
 
 function getBlsContractClient(net, keypair, programId) {
-  if (programId != null) setDevProgramId(new PublicKey(programId));
+  if (programId != null) setBlsContractDevProgramId(new PublicKey(programId));
   const connection = getConnection(net);
 
   const wallet = new anchor.Wallet(keypair);
@@ -73,7 +74,9 @@ function getConnection(net) {
   return connection;
 }
 
-function getBlsTimeContractClient(net, keypair) {
+function getBlsTimeContractClient(net, keypair, programId) {
+  if (programId != null)
+    setBlsTimeContractDevProgramId(new PublicKey(programId));
   const connection = getConnection(net);
 
   const wallet = new anchor.Wallet(keypair);
@@ -143,7 +146,7 @@ const bs58Message = async (connection, instructions, payer) => {
 
   const wrappedMessage = new TransactionMessage({
     instructions,
-    payerKey: payer.publicKey,
+    payerKey: payer.publicKey ? payer.publicKey : payer,
     recentBlockhash: blockhash,
   }).compileToLegacyMessage();
   return bs58.encode(wrappedMessage.serialize());

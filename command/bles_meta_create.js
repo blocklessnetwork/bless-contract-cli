@@ -1,6 +1,5 @@
 const { Command, Argument } = require("commander");
 const chalk = require("chalk");
-const Squads = require("@sqds/sdk");
 const anchor = require("@coral-xyz/anchor");
 const { WALLET_PATH } = require("../lib/constants");
 const {
@@ -82,10 +81,6 @@ blessMetaCreateCommand
           );
           process.exit(1);
         }
-        const squads = Squads.default.endpoint(
-          client.connection.rpcEndpoint,
-          new anchor.Wallet(keypair),
-        );
         const tx = await client.blessTokenClient.getCreateMetadataTx(
           mintPubkey,
           adminPubkey,
