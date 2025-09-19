@@ -12,9 +12,10 @@ const keccak256 = require("keccak256");
 const { MerkleTree } = require("merkletreejs");
 const { formatTime } = require("./utils.js");
 const assert = require("assert");
+const { bs58 } = require("@coral-xyz/anchor/dist/cjs/utils/bytes/index.js");
 
 const genMerkleTreeCommand = new Command("gen_merkle_tree")
-  .option("--num", "Number of users to parse (default: 5,000,000)")
+  .option("--num <num>", "Number of users to parse (default: 5,000,000)")
   .description("gen_merkle_tree: Generate a Merkle tree from a user list file");
 const file = new Argument(
   "file",
@@ -48,6 +49,9 @@ genMerkleTreeCommand.addArgument(file).action(async (file, options) => {
     }
     const now = new Date().getTime();
     ws = fs.createReadStream(file, { encoding: "utf8" });
+    const writeStream = fs.createWriteStream(`${file}-output.json`, {
+      encoding: "utf8",
+    });
     const pipeline = chain([ws, parser(), streamArray()]);
     const bar = new cliProgress.SingleBar(
       { fps: 10 },
@@ -66,22 +70,66 @@ genMerkleTreeCommand.addArgument(file).action(async (file, options) => {
           new anchor.BN(value.lockedTime),
         ),
       );
-      bar.update(parseInt((key / options.num) * 100));
+      bar.update(parseInt((key / options.num) * 50));
     });
+    const pipeline2 = chain([
+      fs.createReadStream(file, { encoding: "utf8" }),
+      parser(),
+      streamArray(),
+    ]);
     pipeline.on("end", () => {
       const tree = new MerkleTree(leaves, keccak256, { sortPairs: true });
       delete leaves;
-      bar.update(100);
-      console.log(
-        chalk.green(
-          "\nMerkle tree root:" +
-            new PublicKey(tree.getRoot()).toBase58() +
-            ", spent time: " +
-            formatTime((new Date().getTime() - now) / 1000),
-          " total: " + (last + 1),
-        ),
-      );
-      process.exit(0);
+      bar.update(50);
+      writeStream.write("[");
+      pipeline2.on("data", ({ key, value }) => {
+        const proofBuf = tree
+          .getProof(
+            leafNode(
+              new PublicKey(value.address),
+              new anchor.BN(value.amount),
+              new anchor.BN(value.lockedTime),
+            ),
+          )
+          .map((d) => d.data);
+
+        writeStream.write(
+          JSON.stringify({
+            address: value.address,
+            amount: value.amount,
+            lockedTime: value.lockedTime,
+            proof: proofBuf.map((d) => bs58.encode(d)),
+          }),
+        );
+        if (key != last) {
+          writeStream.write(",");
+        }
+        bar.update(parseInt(50 + (key / options.num) * 50));
+      });
+      pipeline2.on("end", () => {
+        writeStream.write("]");
+        writeStream.end();
+      });
+      writeStream.on("finish", () => {
+        bar.update(parseInt(100));
+        fs.writeFile(
+          `${new PublicKey(tree.getRoot()).toBase58()}`,
+          "This is merkle root",
+          (e) => {
+            console.error(e);
+          },
+        );
+        console.log(
+          chalk.green(
+            "\nMerkle tree root:" +
+              new PublicKey(tree.getRoot()).toBase58() +
+              ", spent time: " +
+              formatTime((new Date().getTime() - now) / 1000),
+            " total: " + (last + 1),
+          ),
+        );
+        process.exit(0);
+      });
     });
   } catch (e) {
     console.log(chalk.red("\nFailed to generate Merkle root: " + e));
