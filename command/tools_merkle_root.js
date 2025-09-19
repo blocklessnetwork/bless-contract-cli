@@ -14,7 +14,7 @@ const { formatTime } = require("./utils.js");
 const assert = require("assert");
 
 const genMerkleTreeCommand = new Command("gen_merkle_tree")
-  .option("--num", "Number of users to parse (default: 5,000,000)")
+  .option("--num <num>", "Number of users to parse (default: 5,000,000)")
   .description("gen_merkle_tree: Generate a Merkle tree from a user list file");
 const file = new Argument(
   "file",
