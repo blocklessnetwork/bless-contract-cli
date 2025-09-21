@@ -79,7 +79,7 @@ timeSetPendingAdminCommand
         if (state.adminAccount.toBase58() != admin.toBase58()) {
           console.log(
             chalk.red(
-              "set merkle pending admin is denied, admin is not matched, the state  admin is " +
+              "set pending admin is denied, admin is not matched, the state  admin is " +
                 state.adminAccount.toBase58(),
             ),
           );
@@ -104,7 +104,7 @@ timeSetPendingAdminCommand
         if (state.adminAccount.toBase58() != keypair.publicKey.toBase58()) {
           console.log(
             chalk.red(
-              "set merkle pending admin is denied, admin is not matched, the state  admin is " +
+              "set pending admin is denied, admin is not matched, the state  admin is " +
                 state.adminAccount.toBase58(),
             ),
           );

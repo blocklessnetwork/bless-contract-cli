@@ -8,7 +8,7 @@ const {
 const { WALLET_PATH } = require("../lib/constants");
 const chalk = require("chalk");
 const { PublicKey } = require("@solana/web3.js");
-const timeSetPausedCommand = new Command("merkle-root")
+const timeSetPausedCommand = new Command("set-paused")
   .option(
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
@@ -56,7 +56,7 @@ timeSetPausedCommand
         keypair,
         options.programId,
       );
-      if (paused != "true" || paused != "false") {
+      if (paused != "true" && paused != "false") {
         console.log(chalk.red("paused must be true or false."));
         process.exit(1);
       }
@@ -78,9 +78,13 @@ timeSetPausedCommand
           process.exit(1);
         }
 
-        const tx = await client.blessTimeClient.getSetPausedTx(paused, {
-          signer: admin,
-        });
+        const tx = await client.blessTimeClient.getSetPausedTx(
+          mintPubkey,
+          paused,
+          {
+            signer: admin,
+          },
+        );
         const itx = await bs58Message(
           client.connection,
           tx.instructions,
@@ -92,7 +96,7 @@ timeSetPausedCommand
         if (state.adminAccount.toBase58() != keypair.publicKey.toBase58()) {
           console.log(
             chalk.red(
-              "set set paused is denied, admin is not matched, the state  admin is " +
+              "set paused is denied, admin is not matched, the state  admin is " +
                 state.adminAccount.toBase58(),
             ),
           );
