@@ -52,7 +52,7 @@ timeSetMerkleRootCommand
       try {
         mintPubkey = new PublicKey(mint);
       } catch (e) {
-        console.log(chalk.red("invaild mint parameter: " + e));
+        console.log(chalk.red("invalid mint parameter: " + e));
         process.exit(1);
       }
       const client = getBlsTimeContractClient(
@@ -80,7 +80,7 @@ timeSetMerkleRootCommand
         try {
           merkleTreeRootBuff = new PublicKey(merkleTreeRoot).toBuffer();
         } catch (e) {
-          console.log(chalk.red("invaild merkle tree parameter: " + e));
+          console.log(chalk.red("invalid merkle tree parameter: " + e));
           process.exit(1);
         }
         const tx = await client.blessTimeClient.getSetMerkleTreeRootTx(
@@ -112,7 +112,7 @@ timeSetMerkleRootCommand
         try {
           merkleTreeRootBuff = new PublicKey(merkleTreeRoot).toBuffer();
         } catch (e) {
-          console.log(chalk.red("invaild merkle tree parameter: " + e));
+          console.log(chalk.red("invalid merkle tree parameter: " + e));
           process.exit(1);
         }
         await client.blessTimeClient.setMerkleTreeRoot(

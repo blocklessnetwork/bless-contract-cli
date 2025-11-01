@@ -182,5 +182,6 @@ module.exports = {
   getBlsContractClient,
   getProvider,
   getBlsTimeContractClient,
+  getBlsStakeContractClient,
   BlessTokenAccounts,
 };

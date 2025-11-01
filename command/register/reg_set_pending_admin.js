@@ -36,16 +36,16 @@ registerSetPendingAdminCommand
         await client.nodeRegistrationClient.setRegistrationPendingAdminAccount(
           pendingAdmin,
         );
-        console.log(chalk.green("registration set pending admin success."));
+        console.log(chalk.green("Registration set pending admin success."));
       } else {
         const r = await client.nodeRegistrationClient.getNodeRegistration();
         console.log(
-          chalk.green("registration pending admin is " + r.pendingAdminAccount),
+          chalk.green("Registration pending admin is " + r.pendingAdminAccount),
         );
       }
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("set the pending admin fail: " + e));
+      console.log(chalk.red("Set the pending admin fail: " + e));
       process.exit(1);
     }
   });

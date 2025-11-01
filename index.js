@@ -10,6 +10,8 @@ const timeCommand = require("./command/time");
 const analyzeCommand = require("./command/analyze.js");
 const programCommand = require("./command/program/program.js");
 const toolsCommand = require("./command/tools");
+const stakeCommand = require("./command/stake");
+
 const {
   blessMetaInitCommand,
   blessMetaCreateCommand,
@@ -48,6 +50,7 @@ async function main() {
   program.addCommand(timeCommand);
   program.addCommand(programCommand);
   program.addCommand(toolsCommand);
+  program.addCommand(stakeCommand);
   const tokenMetaCommand = new Command("token-meta").description(
     "token-meta: the operations for the bless token meta.",
   );

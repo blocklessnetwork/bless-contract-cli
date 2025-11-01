@@ -51,7 +51,7 @@ timeAcceptAdminCommand.addArgument(mint).action(async (mint, options) => {
     try {
       mintPubkey = new PublicKey(mint);
     } catch (e) {
-      console.log(chalk.red("invaild mint parameter: " + e));
+      console.log(chalk.red("invalid mint parameter: " + e));
       process.exit(1);
     }
     const state = await client.blessTimeClient.getTimeState(mintPubkey);
