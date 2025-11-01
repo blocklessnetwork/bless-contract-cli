@@ -1,8 +1,8 @@
 const { Command, Argument } = require("commander");
 const chalk = require("chalk");
-const { WALLET_PATH } = require("../lib/constants");
+const { WALLET_PATH } = require("../../lib/constants");
 const { PublicKey } = require("@solana/web3.js");
-const { getBlsContractClient, getPath, readKeypair } = require("./utils");
+const { getBlsContractClient, getPath, readKeypair } = require("../utils");
 
 const blessMetaInitCommand = new Command("init")
   .option(
@@ -16,7 +16,7 @@ const blessMetaInitCommand = new Command("init")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the bless meta, default: " +
-      WALLET_PATH,
+    WALLET_PATH,
   )
   .description("init: init the meta state, the payer as the default admin.");
 const mint = new Argument("mint", "mint: the public key of the mint token");

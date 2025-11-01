@@ -1,12 +1,12 @@
 const { Command, Argument } = require("commander");
 const chalk = require("chalk");
-const { WALLET_PATH } = require("../lib/constants");
+const { WALLET_PATH } = require("../../lib/constants");
 const {
   getBlsContractClient,
   getPath,
   readKeypair,
   bs58Message,
-} = require("./utils");
+} = require("../utils");
 const { PublicKey } = require("@solana/web3.js");
 
 const blessMetaAcceptAdminCommand = new Command("accept-admin")
@@ -21,7 +21,7 @@ const blessMetaAcceptAdminCommand = new Command("accept-admin")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the transaction, default: " +
-      WALLET_PATH,
+    WALLET_PATH,
   )
   .option(
     "--squads <true/false>",
@@ -65,7 +65,7 @@ blessMetaAcceptAdminCommand
           console.log(
             chalk.red(
               "accept admin is denied, pending admin is not matched, the state pending admin is " +
-                state.pendingAdmin.toBase58(),
+              state.pendingAdmin.toBase58(),
             ),
           );
           process.exit(1);
@@ -90,7 +90,7 @@ blessMetaAcceptAdminCommand
           console.log(
             chalk.red(
               "accept admin is denied, pending admin is not matched, the state pending admin is " +
-                state.pendingAdmin.toBase58(),
+              state.pendingAdmin.toBase58(),
             ),
           );
           process.exit(1);

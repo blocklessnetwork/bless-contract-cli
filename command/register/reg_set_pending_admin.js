@@ -1,8 +1,8 @@
 const { Command, Argument } = require("commander");
 const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
-const { WALLET_PATH } = require("../lib/constants");
-const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
+const { WALLET_PATH } = require("../../lib/constants");
+const { getBlsRegisterClient, getPath, readKeypair } = require("../utils");
 const { PublicKey } = require("@solana/web3.js");
 
 const registerSetPendingAdminCommand = new Command("pending-admin")
@@ -13,7 +13,7 @@ const registerSetPendingAdminCommand = new Command("pending-admin")
   .option(
     "--signer <signer>",
     "signer: the signer is the admin of the registration, default: " +
-      WALLET_PATH,
+    WALLET_PATH,
   )
   .description(
     "pending-admin: set/show the pending admin of the registration, the value is base58, if is empty, show the pending admin",

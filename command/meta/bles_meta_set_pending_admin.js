@@ -1,17 +1,15 @@
 const { Command, Argument } = require("commander");
 const chalk = require("chalk");
-const anchor = require("@coral-xyz/anchor");
-const { WALLET_PATH } = require("../lib/constants");
+const { WALLET_PATH } = require("../../lib/constants");
 const {
   getBlsContractClient,
   getPath,
   readKeypair,
-  getMetadata,
   bs58Message,
-} = require("./utils");
+} = require("../utils");
 const { PublicKey } = require("@solana/web3.js");
 
-const blessMetaCreateCommand = new Command("create")
+const blessMetaSetPendingAdminCommand = new Command("pending-admin")
   .option(
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
@@ -23,31 +21,34 @@ const blessMetaCreateCommand = new Command("create")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the bless meta, default: " +
-      WALLET_PATH,
+    WALLET_PATH,
   )
-  .option("--multisig <multisig>", "multisig:  the multisig of the bless meta")
+  .option(
+    "--admin <admin>",
+    "admin: the admin of the bless meta, default: " + WALLET_PATH,
+  )
   .option(
     "--squads <true/false>",
     "squads: if squads true, use squads to signature, default is false.",
   )
-  .option(
-    "--admin <admin>",
-    "admin: the admin of the bless meta, the admin will as  payer in squads mode ",
-  )
   .description(
-    "create-meta: create meta account of the bless meta, the value is base58",
+    "pending-admin: set the pending admin of the bless meta, the value is base58",
   );
 const mint = new Argument("mint", "mint: the public key of the mint token");
 mint.required = true;
-const uri = new Argument("uri", "the meta data uri.");
-uri.required = true;
+const pending = new Argument(
+  "pending-admin",
+  "pending-admin: the pending admin of the bless meta",
+);
+pending.required = true;
 
-blessMetaCreateCommand
+blessMetaSetPendingAdminCommand
   .addArgument(mint)
-  .addArgument(uri)
-  .action(async (mint, uri, options) => {
+  .addArgument(pending)
+  .action(async (mint, pending, options) => {
     options.cluster = options.cluster || "localnet";
     options.signer = options.signer || getPath(WALLET_PATH);
+
     options.squads = options.squads || false;
     try {
       const keypair = readKeypair(options.signer);
@@ -56,17 +57,11 @@ blessMetaCreateCommand
         keypair,
         options.programId,
       );
-
-      const metaJson = await getMetadata(uri);
+      let pendingAdmin = new PublicKey(pending);
       let mintPubkey = new PublicKey(mint);
       const state =
         await client.blessTokenClient.getBlessTokenMetaState(mintPubkey);
       if (options.squads) {
-        if (options.multisig == null) {
-          console.log(chalk.red("multisig is required."));
-          process.exit(1);
-        }
-        const multisigPda = new PublicKey(options.multisig);
         if (options.admin == null) {
           console.log(chalk.red("admin is required."));
           process.exit(1);
@@ -75,20 +70,16 @@ blessMetaCreateCommand
         if (state.admin.toBase58() != adminPubkey.toBase58()) {
           console.log(
             chalk.red(
-              "create is denied, admin is not matched, the state admin is " +
-                state.admin.toBase58(),
+              "set pending admin is denied, admin is not matched, the state admin is " +
+              state.admin.toBase58(),
             ),
           );
           process.exit(1);
         }
-        const tx = await client.blessTokenClient.getCreateMetadataTx(
+        const tx = await client.blessTokenClient.getSetPendingAdminAccountTx(
           mintPubkey,
           adminPubkey,
-          {
-            name: metaJson.name,
-            symbol: metaJson.symbol,
-            uri,
-          },
+          pendingAdmin,
           { signer: adminPubkey },
         );
         const itx = await bs58Message(
@@ -97,7 +88,7 @@ blessMetaCreateCommand
           keypair,
         );
         console.log(
-          "bless token metadata create account transaction created, " + itx,
+          "bless meta set pending admin transaction created: \n" + itx,
         );
       } else {
         options.admin = options.admin || getPath(WALLET_PATH);
@@ -105,32 +96,28 @@ blessMetaCreateCommand
         if (state.admin.toBase58() != adminKeypair.publicKey.toBase58()) {
           console.log(
             chalk.red(
-              "create is denied, admin is not matched, the state admin is " +
-                state.admin.toBase58(),
+              "set pending admin is denied, admin is not matched, the state admin is " +
+              state.admin.toBase58(),
             ),
           );
           process.exit(1);
         }
-        await client.blessTokenClient.createMetadata(
+        await client.blessTokenClient.setPendingAdminAccount(
           mintPubkey,
           adminKeypair.publicKey,
-          {
-            name: metaJson.name,
-            symbol: metaJson.symbol,
-            uri,
-          },
+          pendingAdmin,
           {
             signer: keypair.publicKey,
             signerKeypair: [keypair, adminKeypair],
           },
         );
       }
-      console.log(chalk.green("bless token metadata create account success."));
+      console.log(chalk.green("bless meta set pending admin success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("bless token metadata create account fail: " + e));
+      console.log(chalk.red("bless meta set the pending admin fail: " + e));
       process.exit(1);
     }
   });
 
-module.exports = blessMetaCreateCommand;
+module.exports = blessMetaSetPendingAdminCommand;

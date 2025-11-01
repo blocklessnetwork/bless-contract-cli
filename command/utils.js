@@ -19,6 +19,11 @@ const {
   BlsClient: BlsTimeContractClient,
   setDevProgramId: setBlsTimeContractDevProgramId,
 } = require("@blessnetwork/bless-time-contract");
+
+const {
+  BlsClient: BlsStakeContractClient,
+  setDevProgramId: setBlsStakeContractDevProgramId,
+} = require("@blessnetwork/bless-stake");
 const { bs58 } = require("@coral-xyz/anchor/dist/cjs/utils/bytes");
 const getProvider = (input) => {
   let url = input;
@@ -85,6 +90,20 @@ function getBlsTimeContractClient(net, keypair, programId) {
   });
 
   const client = new BlsTimeContractClient({ provider });
+  return client;
+}
+
+function getBlsStakeContractClient(net, keypair, programId) {
+  if (programId != null)
+    setBlsStakeContractDevProgramId(new PublicKey(programId));
+  const connection = getConnection(net);
+
+  const wallet = new anchor.Wallet(keypair);
+  const provider = new anchor.AnchorProvider(connection, wallet, {
+    commitment: "confirmed",
+  });
+
+  const client = new BlsStakeContractClient({ provider });
   return client;
 }
 

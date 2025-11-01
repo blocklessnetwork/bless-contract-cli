@@ -1,6 +1,6 @@
 const { Command, Argument } = require("commander");
-const { getPath, readKeypair, getConnection } = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
+const { getPath, readKeypair, getConnection } = require("../utils");
+const { WALLET_PATH } = require("../../lib/constants");
 const Loader = require("./loader");
 const chalk = require("chalk");
 const nacl = require("tweetnacl");

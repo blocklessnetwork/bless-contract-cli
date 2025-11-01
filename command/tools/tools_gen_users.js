@@ -3,7 +3,7 @@ const { Keypair } = require("@solana/web3.js");
 const chalk = require("chalk");
 const fs = require("fs");
 const cliProgress = require("cli-progress");
-const { formatTime } = require("./utils.js");
+const { formatTime } = require("../utils.js");
 
 const genUsersDoCommand = new Command("gen_users")
   .option("--file", "Output file path (default: ./users.json)")
@@ -54,7 +54,7 @@ genUsersDoCommand.addArgument(num).action(async (num, options) => {
       console.log(
         chalk.green(
           "\nSuccessfully generated users, time spent: " +
-            formatTime((new Date().getTime() - now) / 1000),
+          formatTime((new Date().getTime() - now) / 1000),
         ),
       );
       process.exit(0);

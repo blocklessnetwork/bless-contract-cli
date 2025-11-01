@@ -1,13 +1,13 @@
 const { Command, Argument } = require("commander");
 const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
-const { WALLET_PATH } = require("../lib/constants");
+const { WALLET_PATH } = require("../../lib/constants");
 const {
   getBlsTimeContractClient,
   getPath,
   readKeypair,
   bs58Message,
-} = require("./utils");
+} = require("../utils");
 const { PublicKey } = require("@solana/web3.js");
 
 const timeAcceptAdminCommand = new Command("accept-admin")
@@ -65,7 +65,7 @@ timeAcceptAdminCommand.addArgument(mint).action(async (mint, options) => {
         console.log(
           chalk.red(
             "accept admin is denied, pending admin is not matched, the state pending admin is " +
-              state.pendingAdmin.toBase58(),
+            state.pendingAdmin.toBase58(),
           ),
         );
         process.exit(1);
@@ -85,7 +85,7 @@ timeAcceptAdminCommand.addArgument(mint).action(async (mint, options) => {
         console.log(
           chalk.red(
             "accept admin is denied, pending admin is not matched, the state pending admin is " +
-              state.pendingAdmin.toBase58(),
+            state.pendingAdmin.toBase58(),
           ),
         );
         process.exit(1);

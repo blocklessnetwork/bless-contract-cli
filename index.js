@@ -4,17 +4,20 @@ const packageJson = require("./package.json");
 const Box = require("cli-box");
 const chalk = require("chalk");
 const { Command } = require("commander");
-const registerCommand = require("./command/register.js");
+const registerCommand = require("./command/register");
 const blesstokenCommand = require("./command/bless_token.js");
-const timeCommand = require("./command/time.js");
+const timeCommand = require("./command/time");
 const analyzeCommand = require("./command/analyze.js");
-const programCommand = require("./command/program.js");
-const toolsCommand = require("./command/tools.js");
-const tokenMetaSetAdminCommand = require("./command/bles_meta_set_pending_admin.js");
-const tokenMetaAcceptAdminCommand = require("./command/bles_meta_accept_admin.js");
-const blessMetaUpdateCommand = require("./command/bles_meta_update.js");
-const blessMetaCreateCommand = require("./command/bles_meta_create.js");
-const blessMetaInitCommand = require("./command/bles_meta_init.js");
+const programCommand = require("./command/program/program.js");
+const toolsCommand = require("./command/tools");
+const {
+  blessMetaInitCommand,
+  blessMetaCreateCommand,
+  blessMetaUpdateCommand,
+  tokenMetaSetAdminCommand,
+  tokenMetaAcceptAdminCommand,
+} = require("./command/meta")
+
 const program = new Command();
 
 async function main() {

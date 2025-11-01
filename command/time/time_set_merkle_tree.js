@@ -4,11 +4,11 @@ const {
   getPath,
   readKeypair,
   bs58Message,
-} = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
+} = require("../utils");
+const { WALLET_PATH } = require("../../lib/constants");
 const chalk = require("chalk");
 const { PublicKey } = require("@solana/web3.js");
-const timeSetPausedCommand = new Command("set-paused")
+const timeSetMerkleRootCommand = new Command("merkle-root")
   .option(
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
@@ -30,16 +30,20 @@ const timeSetPausedCommand = new Command("set-paused")
     "pending: if squads true, use admin to signature in squads",
   )
   .description("merkle-root: set the merkle tree root.");
-const paused = new Argument("paused", "paused: set the time state paused.");
+const merkleTreeRoot = new Argument(
+  "root",
+  "root: the root is merkle tree root value， must be base58 encoding.",
+);
+merkleTreeRoot.required = true;
 const mint = new Argument(
   "mint",
   "mint: the mint is the mint token base58 value ",
 );
 mint.required = true;
-timeSetPausedCommand
+timeSetMerkleRootCommand
   .addArgument(mint)
-  .addArgument(paused)
-  .action(async (mint, paused, options) => {
+  .addArgument(merkleTreeRoot)
+  .action(async (mint, merkleTreeRoot, options) => {
     options.cluster = options.cluster || "localnet";
     options.signer = options.signer || getPath(WALLET_PATH);
     try {
@@ -56,61 +60,72 @@ timeSetPausedCommand
         keypair,
         options.programId,
       );
-      if (paused != "true" && paused != "false") {
-        console.log(chalk.red("paused must be true or false."));
-        process.exit(1);
-      }
-      paused = paused == "true" ? true : false;
       const state = await client.blessTimeClient.getTimeState(mintPubkey);
       if (options.squads) {
         if (options.admin == null) {
-          console.log(chalk.red("admin is required."));
+          console.log(chalk.green("admin is required."));
           process.exit(1);
         }
         const admin = new PublicKey(options.admin);
         if (state.adminAccount.toBase58() != admin.toBase58()) {
           console.log(
             chalk.red(
-              "set paused is denied, admin is not matched, the state  admin is " +
-                state.adminAccount.toBase58(),
+              "set merkle tree is denied, admin is not matched, the state  admin is " +
+              state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
         }
-
-        const tx = await client.blessTimeClient.getSetPausedTx(
+        let merkleTreeRootBuff = null;
+        try {
+          merkleTreeRootBuff = new PublicKey(merkleTreeRoot).toBuffer();
+        } catch (e) {
+          console.log(chalk.red("invaild merkle tree parameter: " + e));
+          process.exit(1);
+        }
+        const tx = await client.blessTimeClient.getSetMerkleTreeRootTx(
           mintPubkey,
-          paused,
-          {
-            signer: admin,
-          },
+          merkleTreeRootBuff,
+          { signer: admin },
         );
         const itx = await bs58Message(
           client.connection,
           tx.instructions,
           keypair,
         );
-        console.log("bless time set paused transaction created: \n" + itx);
+        console.log(
+          "bless time set merkle tree root transaction created: \n" + itx,
+        );
       } else {
         const keypair = readKeypair(options.signer);
         if (state.adminAccount.toBase58() != keypair.publicKey.toBase58()) {
           console.log(
             chalk.red(
-              "set paused is denied, admin is not matched, the state  admin is " +
-                state.adminAccount.toBase58(),
+              "set merkle tree is denied, admin is not matched, the state  admin is " +
+              state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
         }
 
-        await client.blessTimeClient.setPaused(mintPubkey, paused);
-        console.log(chalk.green("set paused success."));
+        let merkleTreeRootBuff = null;
+        try {
+          merkleTreeRootBuff = new PublicKey(merkleTreeRoot).toBuffer();
+        } catch (e) {
+          console.log(chalk.red("invaild merkle tree parameter: " + e));
+          process.exit(1);
+        }
+        await client.blessTimeClient.setMerkleTreeRoot(
+          mintPubkey,
+          merkleTreeRootBuff,
+        );
+        console.log(chalk.green("set merkle tree success."));
         process.exit(0);
       }
     } catch (e) {
-      console.log(chalk.red("set paused fail: " + e));
+      console.log(chalk.red("set merkle tree fail: " + e));
       process.exit(1);
     }
   });
 
-module.exports = timeSetPausedCommand;
+module.exports = timeSetMerkleRootCommand;

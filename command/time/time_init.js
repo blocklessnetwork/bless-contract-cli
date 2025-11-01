@@ -1,6 +1,6 @@
 const { Command, Argument } = require("commander");
-const { getBlsTimeContractClient, getPath, readKeypair } = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
+const { getBlsTimeContractClient, getPath, readKeypair } = require("../utils");
+const { WALLET_PATH } = require("../../lib/constants");
 const chalk = require("chalk");
 const { PublicKey } = require("@solana/web3.js");
 const timeInitCommand = new Command("init")

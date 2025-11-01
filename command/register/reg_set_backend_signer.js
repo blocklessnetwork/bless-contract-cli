@@ -1,8 +1,7 @@
 const { Command, Argument } = require("commander");
-const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
-const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
+const { getBlsRegisterClient, getPath, readKeypair } = require("../utils");
+const { WALLET_PATH } = require("../../lib/constants");
 
 const registerBackendSignerCommand = new Command("bsigner")
   .option(
@@ -12,7 +11,7 @@ const registerBackendSignerCommand = new Command("bsigner")
   .option(
     "--signer <signer>",
     "signer: the signer is the backend signer who create the registraction account on chain. default " +
-      WALLET_PATH,
+    WALLET_PATH,
   )
   .description(
     "bsigner: set/show the backend signer of the registration, if is null, show backend signer",

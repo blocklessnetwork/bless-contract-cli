@@ -1,6 +1,5 @@
 const { Command, Argument } = require("commander");
-const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
-const anchor = require("@coral-xyz/anchor");
+const { getBlsRegisterClient } = require("./utils");
 const chalk = require("chalk");
 const { Keypair } = require("@solana/web3.js");
 const fs = require("node:fs");
