@@ -72,7 +72,7 @@ acceptAdminCommand
         }
         const tx = await client.blessStakeClient.blessStakeAcceptPendingAdminTx(
           mintPubkey,
-          pendingAdmin,
+          pendingAdmin.publicKey,
           { signer: pendingAdmin },
         );
         const itx = await bs58Message(
@@ -95,15 +95,15 @@ acceptAdminCommand
           );
           process.exit(1);
         }
-        await client.blessTokenClient.blessStakeAcceptPendingAdmin(mintPubkey, pendingAdmin, {
+        await client.blessStakeClient.blessStakeAcceptPendingAdmin(mintPubkey, pendingAdmin.publicKey, {
           signer: keypair.publicKey,
           signerKeypair: [keypair, pendingAdmin],
         });
       }
-      console.log(chalk.green("Bless stake accept admin success."));
+      console.log(chalk.green("Bless stake accept pending admin success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("Bless stake accept admin fail: " + e));
+      console.log(chalk.red("Bless stake accept pending admin fail: " + e));
       process.exit(1);
     }
   });

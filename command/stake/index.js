@@ -3,6 +3,7 @@ const stakeInitializeCommand = require("./stake_init.js");
 const setPendingAdminCommand = require("./set_pending_admin.js");
 const acceptAdminCommand = require("./accept_admin.js");
 const setAprCommand = require("./set_apr.js");
+const setAprFactorCommand = require("./set_apr_factor.js");
 
 const stakeCommand = new Command("stake").description(
     "stake: The operations for stake conract.",
@@ -10,6 +11,7 @@ const stakeCommand = new Command("stake").description(
 
 stakeCommand.addCommand(stakeInitializeCommand);
 stakeCommand.addCommand(setPendingAdminCommand);
+stakeCommand.addCommand(setAprFactorCommand);
 stakeCommand.addCommand(acceptAdminCommand);
 stakeCommand.addCommand(setAprCommand);
 

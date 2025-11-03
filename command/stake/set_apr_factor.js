@@ -9,7 +9,7 @@ const {
 } = require("../utils");
 const { PublicKey } = require("@solana/web3.js");
 
-const setAprCommand = new Command("set-apr")
+const setAprFactorCommand = new Command("set-factor")
   .option(
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
@@ -32,38 +32,41 @@ const setAprCommand = new Command("set-apr")
     "squads: if squads true, use squads to signature, default is false.",
   )
   .description(
-    "set-apr: set the APR configure of the bless stake",
+    "set-factor: set the APR factor of the bless stake",
   );
 const mint = new Argument("mint", "mint: the public key of the mint token");
 mint.required = true;
 
-const apr = new Argument("apr", 'apr: the APR configure, e.g. [{"periods": 0, "apr": { "numerator": 4, "denominator": 100 }},\
-  {"periods": 1,"apr": { "numerator": 5, "denominator": 100 }},\
-  {"periods": 4,"apr": { "numerator": 55, "denominator": 1000 }},\
-  {"periods": 26,"apr": { "numerator": 6, "denominator": 100 }},\
-  {"periods": 52,"apr": { "numerator": 7, "denominator": 100 }}]');
+const secondsPerPeriods = new Argument("secondsPerPeriods", "secondsPerPeriods: the seconds per periods");
+const periodsPerYear = new Argument("periodsPerYear", "periodsPerYear: periods per year");
 mint.required = true;
-apr.required = true;
+secondsPerPeriods.required = true;
+periodsPerYear.required = true;
 
-setAprCommand
+const parseIntWithError = function (n, err) {
+  let num = null;
+  try {
+    num = parseInt(n);
+  } catch {
+    console.log(chalk.red(err));
+    process.exit(1);
+  }
+  return num;
+}
+setAprFactorCommand
   .addArgument(mint)
-  .addArgument(apr)
-  .action(async (mint, apr, options) => {
+  .addArgument(secondsPerPeriods)
+  .addArgument(periodsPerYear)
+  .action(async (mint, secondsPerPeriods, periodsPerYear, options) => {
     options.cluster = options.cluster || "localnet";
     options.signer = options.signer || getPath(WALLET_PATH);
 
     options.squads = options.squads || false;
     try {
-      try {
-        apr = JSON.parse(apr);
-      } catch {
-        console.log(
-          chalk.red(
-            "the APR configure must be json format. "
-          ),
-        );
-        process.exit(1);
-      }
+
+      secondsPerPeriods = parseIntWithError(secondsPerPeriods, "the secondsPerPeriods must be number format. ");
+      periodsPerYear = parseIntWithError(periodsPerYear, "the periodsPerYear must be number format. ");
+
       const keypair = readKeypair(options.signer);
       const client = getBlsStakeContractClient(
         options.cluster,
@@ -82,16 +85,17 @@ setAprCommand
         if (state.admin.toBase58() != adminPubkey.toBase58()) {
           console.log(
             chalk.red(
-              "Set apr configure is denied, admin is not matched, the state admin is " +
+              "Set APR factor is denied, admin is not matched, the state admin is " +
               state.admin.toBase58(),
             ),
           );
           process.exit(1);
         }
-        const tx = await client.blessStakeClient.blessStakeSetAprRangeTx(
+        const tx = await client.blessStakeClient.blessStakeSetAprFactorTx(
           mintPubkey,
           adminPubkey,
-          apr,
+          secondsPerPeriods,
+          periodsPerYear,
           { signer: adminPubkey },
         );
         const itx = await bs58Message(
@@ -100,7 +104,7 @@ setAprCommand
           keypair,
         );
         console.log(
-          "Bless stake set apr configure transaction created: \n" + itx,
+          "Bless stake set APR factor transaction created: \n" + itx,
         );
       } else {
         options.admin = options.admin || getPath(WALLET_PATH);
@@ -108,28 +112,29 @@ setAprCommand
         if (state.admin.toBase58() != adminKeypair.publicKey.toBase58()) {
           console.log(
             chalk.red(
-              "Set APR configure is denied, admin is not matched, the state admin is " +
+              "Set APR factor is denied, admin is not matched, the state admin is " +
               state.admin.toBase58(),
             ),
           );
           process.exit(1);
         }
-        await client.blessStakeClient.blessStakeSetAprRange(
+        await client.blessStakeClient.blessStakeSetAprFactor(
           mintPubkey,
           adminKeypair.publicKey,
-          apr,
+          secondsPerPeriods,
+          periodsPerYear,
           {
             signer: keypair.publicKey,
             signerKeypair: [keypair, adminKeypair],
           },
         );
       }
-      console.log(chalk.green("Stake contract set APR configure success."));
+      console.log(chalk.green("Stake contract set APR factor success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("Stake contract set APR configure fail: " + e));
+      console.log(chalk.red("Stake contract set APR factor fail: " + e));
       process.exit(1);
     }
   });
 
-module.exports = setAprCommand;
+module.exports = setAprFactorCommand;
