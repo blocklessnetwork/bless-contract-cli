@@ -9,7 +9,7 @@ const { WALLET_PATH } = require("../../lib/constants");
 const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
 const { PublicKey } = require("@solana/web3.js");
-const depositCommand = new Command("deposit")
+const withdrawCommand = new Command("withdraw")
   .option(
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
@@ -26,34 +26,24 @@ const depositCommand = new Command("deposit")
     "--programId <programId>",
     "Program ID: Specify the program ID when working on devnet, testnet, or localnet; it will not work on mainnet.",
   )
-  .description("deposit: deposit the token amount and stake the token amount");
+  .description("withdraw: withdraw with the sequence number");
 const mint = new Argument(
   "mint",
   "mint: the mint is the mint token base58 value ",
 );
-const amount = new Argument("amount", "deposit the token amount");
-const periods = new Argument("periods", "stake periods for earns the rewards.");
-amount.required = true;
-periods.required = true;
+const seq = new Argument("sequence", "the stake sequence.");
+seq.required = true;
 mint.required = true;
-depositCommand
+withdrawCommand
   .addArgument(mint)
-  .addArgument(amount)
-  .addArgument(periods)
-  .action(async (mint, amount, periods, options) => {
+  .addArgument(seq)
+  .action(async (mint, seq, options) => {
     options.cluster = options.cluster || "localnet";
     options.signer = options.signer || getPath(WALLET_PATH);
-    const sequence = new anchor.BN(Date.now());
     try {
-      amount = new anchor.BN(parseInt(amount));
+      seq = new anchor.BN(parseInt(seq));
     } catch {
-      console.log(chalk.red("amount must be a number"));
-      process.exit(1);
-    }
-    try {
-      periods = parseInt(periods);
-    } catch {
-      console.log(chalk.red("periods must be a number"));
+      console.log(chalk.red("sequence must be a number"));
       process.exit(1);
     }
     try {
@@ -72,11 +62,9 @@ depositCommand
       }
 
       if (options.squads) {
-        const tx = await client.blessStakeClient.blessUserStakeStateCreateTx(
+        const tx = await client.blessStakeClient.blessUserWithdrawTx(
           mintPubkey,
-          sequence,
-          amount,
-          periods,
+          seq,
           {
             signer: keypair.publicKey,
             signerKeypair: [keypair],
@@ -87,26 +75,24 @@ depositCommand
           tx.instructions,
           keypair,
         );
-        console.log(`User stake ${sequence} transaction created : ${itx}`);
+        console.log(`User withdraw transaction created : ${itx}`);
       } else {
         const keypair = readKeypair(options.signer);
-        const tx = await client.blessStakeClient.blessUserStakeStateCreate(
+        const tx = await client.blessStakeClient.blessUserWithdraw(
           mintPubkey,
-          sequence,
-          amount,
-          periods,
+          seq,
           {
             signer: keypair.publicKey,
             signerKeypair: [keypair],
           },
         );
-        console.log(chalk.green(`User stake ${sequence} success, tx: ${tx}`));
+        console.log(chalk.green(`User withdraw success, tx: ${tx}`));
         process.exit(0);
       }
     } catch (e) {
-      console.log(chalk.red("User stake failed: " + e));
+      console.log(chalk.red("User withdraw failed: " + e));
       process.exit(1);
     }
   });
 
-module.exports = depositCommand;
+module.exports = withdrawCommand;

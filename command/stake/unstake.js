@@ -26,7 +26,7 @@ const unstakeCommand = new Command("unstake")
     "--programId <programId>",
     "Program ID: Specify the program ID when working on devnet, testnet, or localnet; it will not work on mainnet.",
   )
-  .description("init: initialize the stake state");
+  .description("unstake: unstake with the sequence number");
 const mint = new Argument(
   "mint",
   "mint: the mint is the mint token base58 value ",
