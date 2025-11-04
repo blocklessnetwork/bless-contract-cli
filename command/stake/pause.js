@@ -36,16 +36,13 @@ const setPauseCommand = new Command("pause")
   );
 const mint = new Argument("mint", "mint: the public key of the mint token");
 mint.required = true;
-const pause = new Argument(
-  "pause",
-  "pause: the pause status of the stake activity",
-);
-pause.required = true;
+const status = new Argument("status", "status: the status of the stake activity");
+status.required = true;
 
 setPauseCommand
   .addArgument(mint)
-  .addArgument(pause)
-  .action(async (mint, pause, options) => {
+  .addArgument(status)
+  .action(async (mint, status, options) => {
     options.cluster = options.cluster || "localnet";
     options.signer = options.signer || getPath(WALLET_PATH);
     options.squads = options.squads || false;
@@ -59,7 +56,7 @@ setPauseCommand
       let mintPubkey = new PublicKey(mint);
       const state =
         await client.blessStakeClient.getStakeState(mintPubkey);
-      pause = pause === "true" ? true : false;
+      status = status === "true" ? true : false;
       if (options.squads) {
         if (options.admin == null) {
           console.log(chalk.red("admin is required."));
@@ -77,7 +74,8 @@ setPauseCommand
         }
         const tx = await client.blessStakeClient.blessStakeSetPauseTx(
           mintPubkey,
-          pause,
+          adminPubkey,
+          status,
           { signer: adminPubkey },
         );
         const itx = await bs58Message(
@@ -99,7 +97,7 @@ setPauseCommand
           );
           process.exit(1);
         }
-        await client.blessStakeClient.blessStakeSetPause(mintPubkey, pause, {
+        await client.blessStakeClient.blessStakeSetPause(mintPubkey, adminKeypair.publicKey, status, {
           signer: keypair.publicKey,
           signerKeypair: [keypair, adminKeypair],
         });
