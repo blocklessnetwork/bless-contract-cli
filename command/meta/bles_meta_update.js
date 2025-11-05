@@ -31,7 +31,7 @@ const blessMetaUpdateCommand = new Command("update")
   )
   .option(
     "--admin <admin>",
-    "admin: the admin of the bless meta, the admin will as  payer in squads mode ",
+    "admin: the admin of the bless meta, the admin will as  payer in Squads mode ",
   )
   .description(
     "create-meta: create meta account of the bless meta, the value is base58",

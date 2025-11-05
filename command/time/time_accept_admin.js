@@ -25,7 +25,7 @@ const timeAcceptAdminCommand = new Command("accept-admin")
   )
   .option(
     "--pending <pending>",
-    "pending: if squads true, use pending admin to signature in squads",
+    "pending: if squads true, use pending admin to signature in Squads",
   )
   .option(
     "--signer <signer>",

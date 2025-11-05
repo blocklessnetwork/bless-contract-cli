@@ -71,7 +71,7 @@ acceptAdminCommand
         }
         const tx = await client.blessStakeClient.blessStakeAcceptPendingAdminTx(
           mintPubkey,
-          pendingAdmin.publicKey,
+          pendingAdmin,
           { signer: pendingAdmin },
         );
         const itx = await bs58Message(
