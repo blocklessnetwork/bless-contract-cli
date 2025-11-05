@@ -35,7 +35,7 @@ regInitCommand.addArgument(deadline).action(async (deadline, options) => {
     console.log(chalk.green("registration initial success."));
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("registration initial fail: " + e));
+    console.log(chalk.red("registration initial failed: " + e));
     process.exit(1);
   }
 });

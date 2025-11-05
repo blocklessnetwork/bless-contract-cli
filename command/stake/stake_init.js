@@ -23,12 +23,12 @@ const mint = new Argument(
 );
 const apr = new Argument(
   "apr",
-  "apr: the APR configur, e.g.\
+  "apr: the APR configuration, e.g.\
   [{periods: 0, apr: { numerator: 4, denominator: 100 }},\
   {periods: 1,apr: { numerator: 5, denominator: 100 }},\
   {periods: 4,apr: { numerator: 55, denominator: 1000 }},\
   {periods: 26,apr: { numerator: 6, denominator: 100 }},\
-  {periods: 52,apr: { numerator: 7, denominator: 100 }}]"
+  {periods: 52,apr: { numerator: 7, denominator: 100 }}]",
 );
 apr.required = false;
 mint.required = true;
@@ -52,8 +52,7 @@ stakeInitializeCommand
         console.log(chalk.red("Invalid mint parameter: " + e));
         process.exit(1);
       }
-      if (apr == null)
-        apr = [];
+      if (apr == null) apr = [];
       await client.blessStakeClient.initializeBlessStakeState(mintPubkey, apr);
       console.log(chalk.green("Stake state initialization complete."));
       process.exit(0);

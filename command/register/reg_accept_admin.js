@@ -25,7 +25,7 @@ registerAcceptAdminCommand.action(async (options) => {
     console.log(chalk.green("registration accept admin success."));
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("accept admin of registration fail: " + e));
+    console.log(chalk.red("accept admin of registration failed: " + e));
     process.exit(1);
   }
 });

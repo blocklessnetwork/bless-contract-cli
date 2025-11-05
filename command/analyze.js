@@ -57,7 +57,7 @@ analyzeCommand.addArgument(file).action(async (file, options) => {
     } while (rs != null && rs.length > 0);
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("analyze execute fail: " + e));
+    console.log(chalk.red("analyze execute failed: " + e));
     process.exit(1);
   }
 });

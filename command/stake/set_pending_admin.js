@@ -21,7 +21,7 @@ const setPendingAdminCommand = new Command("pending-admin")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the bless stake, default: " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .option(
     "--admin <admin>",
@@ -29,7 +29,7 @@ const setPendingAdminCommand = new Command("pending-admin")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .description(
     "pending-admin: set the pending admin of the bless stake, the value is base58",
@@ -59,8 +59,7 @@ setPendingAdminCommand
       );
       let pendingAdmin = new PublicKey(pending);
       let mintPubkey = new PublicKey(mint);
-      const state =
-        await client.blessStakeClient.getStakeState(mintPubkey);
+      const state = await client.blessStakeClient.getStakeState(mintPubkey);
       if (options.squads) {
         if (options.admin == null) {
           console.log(chalk.red("admin is required."));
@@ -71,7 +70,7 @@ setPendingAdminCommand
           console.log(
             chalk.red(
               "Set pending admin is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -97,7 +96,7 @@ setPendingAdminCommand
           console.log(
             chalk.red(
               "Set pending admin is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -115,7 +114,9 @@ setPendingAdminCommand
       console.log(chalk.green("Stake contract set pending admin success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("Stake contract set the pending admin fail: " + e));
+      console.log(
+        chalk.red("Stake contract set the pending admin failed: " + e),
+      );
       process.exit(1);
     }
   });

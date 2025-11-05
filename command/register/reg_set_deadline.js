@@ -12,7 +12,7 @@ const registerSetDeadlineCommand = new Command("deadline")
   .option(
     "--signer <signer>",
     "signer: the signer is the backend signer who create the registraction account on chain. default " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .description(
     "deadline: set/show the deadline of the registration, if is null, show daedline",
@@ -52,7 +52,7 @@ registerSetDeadlineCommand
       }
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("set the deadline of registration fail: " + e));
+      console.log(chalk.red("set the deadline of registration failed: " + e));
       process.exit(1);
     }
   });

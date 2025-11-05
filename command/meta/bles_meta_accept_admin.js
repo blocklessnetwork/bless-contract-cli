@@ -21,11 +21,11 @@ const blessMetaAcceptAdminCommand = new Command("accept-admin")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the transaction, default: " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .option(
     "--admin <admin>",
@@ -65,7 +65,7 @@ blessMetaAcceptAdminCommand
           console.log(
             chalk.red(
               "accept admin is denied, pending admin is not matched, the state pending admin is " +
-              state.pendingAdmin.toBase58(),
+                state.pendingAdmin.toBase58(),
             ),
           );
           process.exit(1);
@@ -90,7 +90,7 @@ blessMetaAcceptAdminCommand
           console.log(
             chalk.red(
               "accept admin is denied, pending admin is not matched, the state pending admin is " +
-              state.pendingAdmin.toBase58(),
+                state.pendingAdmin.toBase58(),
             ),
           );
           process.exit(1);
@@ -103,7 +103,7 @@ blessMetaAcceptAdminCommand
       console.log(chalk.green("bless meta accept admin success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("bless meta accept admin fail: " + e));
+      console.log(chalk.red("bless meta accept admin failed: " + e));
       process.exit(1);
     }
   });

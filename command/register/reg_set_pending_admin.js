@@ -13,7 +13,7 @@ const registerSetPendingAdminCommand = new Command("pending-admin")
   .option(
     "--signer <signer>",
     "signer: the signer is the admin of the registration, default: " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .description(
     "pending-admin: set/show the pending admin of the registration, the value is base58, if is empty, show the pending admin",
@@ -45,7 +45,7 @@ registerSetPendingAdminCommand
       }
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("Set the pending admin fail: " + e));
+      console.log(chalk.red("Set the pending admin failed: " + e));
       process.exit(1);
     }
   });

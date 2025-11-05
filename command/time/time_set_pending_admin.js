@@ -18,7 +18,7 @@ const timeSetPendingAdminCommand = new Command("pending-admin")
   .option(
     "--signer <signer>",
     "signer: the signer is the admin of the time contract, default: " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .option(
     "--programId <programId>",
@@ -26,7 +26,7 @@ const timeSetPendingAdminCommand = new Command("pending-admin")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .option(
     "--admin <admin>",
@@ -80,7 +80,7 @@ timeSetPendingAdminCommand
           console.log(
             chalk.red(
               "set pending admin is denied, admin is not matched, the state  admin is " +
-              state.adminAccount.toBase58(),
+                state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
@@ -105,7 +105,7 @@ timeSetPendingAdminCommand
           console.log(
             chalk.red(
               "set pending admin is denied, admin is not matched, the state  admin is " +
-              state.adminAccount.toBase58(),
+                state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
@@ -118,7 +118,7 @@ timeSetPendingAdminCommand
       }
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("set the pending admin fail: " + e));
+      console.log(chalk.red("set the pending admin failed: " + e));
       process.exit(1);
     }
   });

@@ -20,7 +20,7 @@ const withdrawCommand = new Command("withdraw")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .option(
     "--programId <programId>",

@@ -23,7 +23,7 @@ const timeSetPausedCommand = new Command("set-paused")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .option(
     "--admin <admin>",
@@ -72,7 +72,7 @@ timeSetPausedCommand
           console.log(
             chalk.red(
               "set paused is denied, admin is not matched, the state  admin is " +
-              state.adminAccount.toBase58(),
+                state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
@@ -97,7 +97,7 @@ timeSetPausedCommand
           console.log(
             chalk.red(
               "set paused is denied, admin is not matched, the state  admin is " +
-              state.adminAccount.toBase58(),
+                state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
@@ -108,7 +108,7 @@ timeSetPausedCommand
         process.exit(0);
       }
     } catch (e) {
-      console.log(chalk.red("set paused fail: " + e));
+      console.log(chalk.red("set paused failed: " + e));
       process.exit(1);
     }
   });

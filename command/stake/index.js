@@ -10,7 +10,7 @@ const unstakeCommand = require("./unstake.js");
 const withdrawCommand = require("./withdraw.js");
 
 const stakeCommand = new Command("stake").description(
-  "stake: The operations for stake conract.",
+  "stake: The operations for stake contract.",
 );
 
 stakeCommand.addCommand(stakeInitializeCommand);

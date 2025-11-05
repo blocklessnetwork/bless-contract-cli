@@ -22,12 +22,12 @@ const blessMetaUpdateCommand = new Command("update")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the bless meta, default: " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .option("--multisig <multisig>", "multisig:  the multisig of the bless meta")
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .option(
     "--admin <admin>",
@@ -69,7 +69,7 @@ blessMetaUpdateCommand
           console.log(
             chalk.red(
               "update is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -99,7 +99,7 @@ blessMetaUpdateCommand
           console.log(
             chalk.red(
               "update is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -116,7 +116,9 @@ blessMetaUpdateCommand
       console.log(chalk.green("bless token metadata account update success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("bless token metadata account update fail: " + e));
+      console.log(
+        chalk.red("bless token metadata account update failed: " + e),
+      );
       process.exit(1);
     }
   });

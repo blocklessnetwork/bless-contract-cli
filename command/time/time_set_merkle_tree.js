@@ -23,7 +23,7 @@ const timeSetMerkleRootCommand = new Command("merkle-root")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .option(
     "--admin <admin>",
@@ -71,7 +71,7 @@ timeSetMerkleRootCommand
           console.log(
             chalk.red(
               "set merkle tree is denied, admin is not matched, the state  admin is " +
-              state.adminAccount.toBase58(),
+                state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
@@ -102,7 +102,7 @@ timeSetMerkleRootCommand
           console.log(
             chalk.red(
               "set merkle tree is denied, admin is not matched, the state  admin is " +
-              state.adminAccount.toBase58(),
+                state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
@@ -123,7 +123,7 @@ timeSetMerkleRootCommand
         process.exit(0);
       }
     } catch (e) {
-      console.log(chalk.red("set merkle tree fail: " + e));
+      console.log(chalk.red("set merkle tree failed: " + e));
       process.exit(1);
     }
   });

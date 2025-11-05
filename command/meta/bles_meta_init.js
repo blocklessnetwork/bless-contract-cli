@@ -16,7 +16,7 @@ const blessMetaInitCommand = new Command("init")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the bless meta, default: " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .description("init: init the meta state, the payer as the default admin.");
 const mint = new Argument("mint", "mint: the public key of the mint token");
@@ -39,7 +39,7 @@ blessMetaInitCommand.addArgument(mint).action(async (mint, options) => {
     console.log(chalk.green("bless token metadata account initial success."));
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("bless token metadata account initial fail: " + e));
+    console.log(chalk.red("bless token metadata account initial failed: " + e));
     process.exit(1);
   }
 });

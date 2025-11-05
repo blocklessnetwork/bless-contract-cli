@@ -21,7 +21,7 @@ const setAprCommand = new Command("set-apr")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the bless stake, default: " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .option(
     "--admin <admin>",
@@ -29,19 +29,20 @@ const setAprCommand = new Command("set-apr")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
-  .description(
-    "set-apr: set the APR configure of the bless stake",
-  );
+  .description("set-apr: set the APR configuration of the bless stake");
 const mint = new Argument("mint", "mint: the public key of the mint token");
 mint.required = true;
 
-const apr = new Argument("apr", 'apr: the APR configure, e.g. [{"periods": 0, "apr": { "numerator": 4, "denominator": 100 }},\
+const apr = new Argument(
+  "apr",
+  'apr: the APR configure, e.g. [{"periods": 0, "apr": { "numerator": 4, "denominator": 100 }},\
   {"periods": 1,"apr": { "numerator": 5, "denominator": 100 }},\
   {"periods": 4,"apr": { "numerator": 55, "denominator": 1000 }},\
   {"periods": 26,"apr": { "numerator": 6, "denominator": 100 }},\
-  {"periods": 52,"apr": { "numerator": 7, "denominator": 100 }}]');
+  {"periods": 52,"apr": { "numerator": 7, "denominator": 100 }}]',
+);
 mint.required = true;
 apr.required = true;
 
@@ -57,11 +58,7 @@ setAprCommand
       try {
         apr = JSON.parse(apr);
       } catch {
-        console.log(
-          chalk.red(
-            "the APR configure must be json format. "
-          ),
-        );
+        console.log(chalk.red("the APR configure must be json format. "));
         process.exit(1);
       }
       const keypair = readKeypair(options.signer);
@@ -71,8 +68,7 @@ setAprCommand
         options.programId,
       );
       let mintPubkey = new PublicKey(mint);
-      const state =
-        await client.blessStakeClient.getStakeState(mintPubkey);
+      const state = await client.blessStakeClient.getStakeState(mintPubkey);
       if (options.squads) {
         if (options.admin == null) {
           console.log(chalk.red("admin is required."));
@@ -83,7 +79,7 @@ setAprCommand
           console.log(
             chalk.red(
               "Set apr configure is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -109,7 +105,7 @@ setAprCommand
           console.log(
             chalk.red(
               "Set APR configure is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -127,7 +123,7 @@ setAprCommand
       console.log(chalk.green("Stake contract set APR configure success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("Stake contract set APR configure fail: " + e));
+      console.log(chalk.red("Stake contract set APR configure failed: " + e));
       process.exit(1);
     }
   });

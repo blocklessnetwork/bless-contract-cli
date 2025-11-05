@@ -20,7 +20,7 @@ const unstakeCommand = new Command("unstake")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .option(
     "--programId <programId>",
@@ -90,7 +90,7 @@ unstakeCommand
         process.exit(0);
       }
     } catch (e) {
-      console.log(chalk.red("User stake failed: " + e));
+      console.log(chalk.red("User unstake failed: " + e));
       process.exit(1);
     }
   });

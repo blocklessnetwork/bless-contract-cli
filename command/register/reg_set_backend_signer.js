@@ -11,7 +11,7 @@ const registerBackendSignerCommand = new Command("bsigner")
   .option(
     "--signer <signer>",
     "signer: the signer is the backend signer who create the registraction account on chain. default " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .description(
     "bsigner: set/show the backend signer of the registration, if is null, show backend signer",
@@ -38,7 +38,7 @@ registerBackendSignerCommand
       process.exit(0);
     } catch (e) {
       console.log(
-        chalk.red("set the backend signer of registration fail: " + e),
+        chalk.red("set the backend signer of registration failed: " + e),
       );
       process.exit(1);
     }

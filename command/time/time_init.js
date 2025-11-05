@@ -43,7 +43,7 @@ timeInitCommand.addArgument(mint).action(async (mint, options) => {
     console.log(chalk.green("time state initial success."));
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("time state initial fail: " + e));
+    console.log(chalk.red("time state initial failed: " + e));
     process.exit(1);
   }
 });

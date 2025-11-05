@@ -64,7 +64,7 @@ upgradeCommand
       const tx = await connection.sendRawTransaction(transaction.serialize());
       console.log(chalk.green("program upgrade success: " + tx));
     } catch (e) {
-      console.log(chalk.red("program upgrade fail: " + e));
+      console.log(chalk.red("program upgrade failed: " + e));
     }
   });
 

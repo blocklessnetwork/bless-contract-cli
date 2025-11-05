@@ -71,7 +71,7 @@ registerDoCommand.addArgument(nodeid).action(async (nodeid, options) => {
     console.log(chalk.green("register success "));
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("register bless node id fail: " + e));
+    console.log(chalk.red("register bless node id failed: " + e));
     process.exit(1);
   }
 });

@@ -21,7 +21,7 @@ const blessMetaSetPendingAdminCommand = new Command("pending-admin")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the bless meta, default: " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .option(
     "--admin <admin>",
@@ -29,7 +29,7 @@ const blessMetaSetPendingAdminCommand = new Command("pending-admin")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .description(
     "pending-admin: set the pending admin of the bless meta, the value is base58",
@@ -71,7 +71,7 @@ blessMetaSetPendingAdminCommand
           console.log(
             chalk.red(
               "set pending admin is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -97,7 +97,7 @@ blessMetaSetPendingAdminCommand
           console.log(
             chalk.red(
               "set pending admin is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -115,7 +115,7 @@ blessMetaSetPendingAdminCommand
       console.log(chalk.green("bless meta set pending admin success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("bless meta set the pending admin fail: " + e));
+      console.log(chalk.red("bless meta set the pending admin failed: " + e));
       process.exit(1);
     }
   });

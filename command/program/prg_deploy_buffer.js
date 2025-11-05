@@ -79,7 +79,7 @@ deployBufferCommand
       const tx = await connection.sendRawTransaction(deployTx.serialize());
       console.log(chalk.green("program deploy success: " + tx));
     } catch (e) {
-      console.log(chalk.red("program deploy fail: " + e));
+      console.log(chalk.red("program deploy failed: " + e));
     }
   });
 

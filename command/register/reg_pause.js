@@ -35,7 +35,7 @@ registerSetPauseCommand.addArgument(pause).action(async (pause, options) => {
     }
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("set the pause status of registration fail: " + e));
+    console.log(chalk.red("set the pause status of registration failed: " + e));
     process.exit(1);
   }
 });

@@ -21,7 +21,7 @@ const setAprFactorCommand = new Command("set-factor")
   .option(
     "--signer <signer>",
     "signer: the signer is the payer of the bless stake, default: " +
-    WALLET_PATH,
+      WALLET_PATH,
   )
   .option(
     "--admin <admin>",
@@ -29,16 +29,20 @@ const setAprFactorCommand = new Command("set-factor")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
-  .description(
-    "set-factor: set the APR factor of the bless stake",
-  );
+  .description("set-factor: set the APR factor of the bless stake");
 const mint = new Argument("mint", "mint: the public key of the mint token");
 mint.required = true;
 
-const secondsPerPeriods = new Argument("secondsPerPeriods", "secondsPerPeriods: the seconds per periods");
-const periodsPerYear = new Argument("periodsPerYear", "periodsPerYear: periods per year");
+const secondsPerPeriods = new Argument(
+  "secondsPerPeriods",
+  "secondsPerPeriods: the seconds per periods",
+);
+const periodsPerYear = new Argument(
+  "periodsPerYear",
+  "periodsPerYear: periods per year",
+);
 mint.required = true;
 secondsPerPeriods.required = true;
 periodsPerYear.required = true;
@@ -52,7 +56,7 @@ const parseIntWithError = function (n, err) {
     process.exit(1);
   }
   return num;
-}
+};
 setAprFactorCommand
   .addArgument(mint)
   .addArgument(secondsPerPeriods)
@@ -63,9 +67,14 @@ setAprFactorCommand
 
     options.squads = options.squads || false;
     try {
-
-      secondsPerPeriods = parseIntWithError(secondsPerPeriods, "the secondsPerPeriods must be number format. ");
-      periodsPerYear = parseIntWithError(periodsPerYear, "the periodsPerYear must be number format. ");
+      secondsPerPeriods = parseIntWithError(
+        secondsPerPeriods,
+        "the secondsPerPeriods must be number format. ",
+      );
+      periodsPerYear = parseIntWithError(
+        periodsPerYear,
+        "the periodsPerYear must be number format. ",
+      );
 
       const keypair = readKeypair(options.signer);
       const client = getBlsStakeContractClient(
@@ -74,8 +83,7 @@ setAprFactorCommand
         options.programId,
       );
       let mintPubkey = new PublicKey(mint);
-      const state =
-        await client.blessStakeClient.getStakeState(mintPubkey);
+      const state = await client.blessStakeClient.getStakeState(mintPubkey);
       if (options.squads) {
         if (options.admin == null) {
           console.log(chalk.red("admin is required."));
@@ -86,7 +94,7 @@ setAprFactorCommand
           console.log(
             chalk.red(
               "Set APR factor is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -103,9 +111,7 @@ setAprFactorCommand
           tx.instructions,
           keypair,
         );
-        console.log(
-          "Bless stake set APR factor transaction created: \n" + itx,
-        );
+        console.log("Bless stake set APR factor transaction created: \n" + itx);
       } else {
         options.admin = options.admin || getPath(WALLET_PATH);
         const adminKeypair = readKeypair(options.admin);
@@ -113,7 +119,7 @@ setAprFactorCommand
           console.log(
             chalk.red(
               "Set APR factor is denied, admin is not matched, the state admin is " +
-              state.admin.toBase58(),
+                state.admin.toBase58(),
             ),
           );
           process.exit(1);
@@ -132,7 +138,7 @@ setAprFactorCommand
       console.log(chalk.green("Stake contract set APR factor success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("Stake contract set APR factor fail: " + e));
+      console.log(chalk.red("Stake contract set APR factor failed: " + e));
       process.exit(1);
     }
   });
