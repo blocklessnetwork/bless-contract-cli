@@ -1,6 +1,6 @@
 const { Command, Argument } = require("commander");
-const { getBlsTimeContractClient, getPath, readKeypair } = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
+const { getBlsTimeContractClient, getPath, readKeypair } = require("../utils");
+const { WALLET_PATH } = require("../../lib/constants");
 const chalk = require("chalk");
 const { PublicKey } = require("@solana/web3.js");
 const timeInitCommand = new Command("init")
@@ -36,14 +36,14 @@ timeInitCommand.addArgument(mint).action(async (mint, options) => {
     try {
       mintPubkey = new PublicKey(mint);
     } catch (e) {
-      console.log(chalk.red("invaild mint parameter: " + e));
+      console.log(chalk.red("invalid mint parameter: " + e));
       process.exit(1);
     }
     await client.blessTimeClient.initializeBlessTimeState(mintPubkey);
     console.log(chalk.green("time state initial success."));
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("time state initial fail: " + e));
+    console.log(chalk.red("time state initial failed: " + e));
     process.exit(1);
   }
 });

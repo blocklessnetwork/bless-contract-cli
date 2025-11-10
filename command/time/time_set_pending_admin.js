@@ -1,21 +1,24 @@
 const { Command, Argument } = require("commander");
+const anchor = require("@coral-xyz/anchor");
+const chalk = require("chalk");
+const { WALLET_PATH } = require("../../lib/constants");
 const {
   getBlsTimeContractClient,
   getPath,
   readKeypair,
   bs58Message,
-} = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
-const chalk = require("chalk");
+} = require("../utils");
 const { PublicKey } = require("@solana/web3.js");
-const timeSetPausedCommand = new Command("set-paused")
+
+const timeSetPendingAdminCommand = new Command("pending-admin")
   .option(
     "--cluster <cluster>",
     "solana cluster: mainnet, testnet, devnet, localnet, <custom>",
   )
   .option(
     "--signer <signer>",
-    "the signer is the admin of  the time contract: " + WALLET_PATH,
+    "signer: the signer is the admin of the time contract, default: " +
+      WALLET_PATH,
   )
   .option(
     "--programId <programId>",
@@ -23,64 +26,68 @@ const timeSetPausedCommand = new Command("set-paused")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .option(
     "--admin <admin>",
     "pending: if squads true, use admin to signature in squads",
   )
-  .description("merkle-root: set the merkle tree root.");
-const paused = new Argument("paused", "paused: set the time state paused.");
+  .description(
+    "pending-admin: set the pending admin of the registration, the value is base58, if is empty",
+  );
 const mint = new Argument(
   "mint",
   "mint: the mint is the mint token base58 value ",
 );
 mint.required = true;
-timeSetPausedCommand
+const pending = new Argument(
+  "pending-admin",
+  "pending-admin: the pending admin of the registration",
+);
+pending.required = true;
+timeSetPendingAdminCommand
   .addArgument(mint)
-  .addArgument(paused)
-  .action(async (mint, paused, options) => {
+  .addArgument(pending)
+  .action(async (mint, pending, options) => {
     options.cluster = options.cluster || "localnet";
     options.signer = options.signer || getPath(WALLET_PATH);
     try {
       const keypair = readKeypair(options.signer);
-      let mintPubkey = null;
-      try {
-        mintPubkey = new PublicKey(mint);
-      } catch (e) {
-        console.log(chalk.red("invaild mint parameter: " + e));
-        process.exit(1);
-      }
       const client = getBlsTimeContractClient(
         options.cluster,
         keypair,
         options.programId,
       );
-      if (paused != "true" && paused != "false") {
-        console.log(chalk.red("paused must be true or false."));
+      let mintPubkey = null;
+      try {
+        mintPubkey = new PublicKey(mint);
+      } catch (e) {
+        console.log(chalk.red("invalid mint parameter: " + e));
         process.exit(1);
       }
-      paused = paused == "true" ? true : false;
+
       const state = await client.blessTimeClient.getTimeState(mintPubkey);
+      let pendingAdmin;
+      try {
+        pendingAdmin = new PublicKey(pending);
+      } catch (e) {
+        console.log(chalk.red("invalid pending-admin parameter: " + e));
+        process.exit(1);
+      }
       if (options.squads) {
-        if (options.admin == null) {
-          console.log(chalk.red("admin is required."));
-          process.exit(1);
-        }
         const admin = new PublicKey(options.admin);
         if (state.adminAccount.toBase58() != admin.toBase58()) {
           console.log(
             chalk.red(
-              "set paused is denied, admin is not matched, the state  admin is " +
+              "set pending admin is denied, admin is not matched, the state  admin is " +
                 state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
         }
-
-        const tx = await client.blessTimeClient.getSetPausedTx(
+        const tx = await client.blessTimeClient.getSetPendingAdminAccountTx(
           mintPubkey,
-          paused,
+          pendingAdmin,
           {
             signer: admin,
           },
@@ -90,27 +97,30 @@ timeSetPausedCommand
           tx.instructions,
           keypair,
         );
-        console.log("bless time set paused transaction created: \n" + itx);
+        console.log(
+          "bless time set pending admin transaction created: \n" + itx,
+        );
       } else {
-        const keypair = readKeypair(options.signer);
         if (state.adminAccount.toBase58() != keypair.publicKey.toBase58()) {
           console.log(
             chalk.red(
-              "set paused is denied, admin is not matched, the state  admin is " +
+              "set pending admin is denied, admin is not matched, the state  admin is " +
                 state.adminAccount.toBase58(),
             ),
           );
           process.exit(1);
         }
-
-        await client.blessTimeClient.setPaused(mintPubkey, paused);
-        console.log(chalk.green("set paused success."));
-        process.exit(0);
+        await client.blessTimeClient.setPendingAdminAccount(
+          mintPubkey,
+          pendingAdmin,
+        );
+        console.log(chalk.green("time contract set pending admin success."));
       }
+      process.exit(0);
     } catch (e) {
-      console.log(chalk.red("set paused fail: " + e));
+      console.log(chalk.red("set the pending admin failed: " + e));
       process.exit(1);
     }
   });
 
-module.exports = timeSetPausedCommand;
+module.exports = timeSetPendingAdminCommand;

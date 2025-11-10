@@ -1,6 +1,6 @@
 const { Command, Argument } = require("commander");
-const { getPath, readKeypair, getConnection } = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
+const { getPath, readKeypair, getConnection } = require("../utils");
+const { WALLET_PATH } = require("../../lib/constants");
 const Loader = require("./loader");
 const chalk = require("chalk");
 const nacl = require("tweetnacl");
@@ -79,7 +79,7 @@ deployBufferCommand
       const tx = await connection.sendRawTransaction(deployTx.serialize());
       console.log(chalk.green("program deploy success: " + tx));
     } catch (e) {
-      console.log(chalk.red("program deploy fail: " + e));
+      console.log(chalk.red("program deploy failed: " + e));
     }
   });
 

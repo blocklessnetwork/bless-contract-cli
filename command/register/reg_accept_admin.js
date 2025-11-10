@@ -1,9 +1,8 @@
 const { Command, Argument } = require("commander");
 const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
-const { WALLET_PATH } = require("../lib/constants");
-const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
-const { PublicKey } = require("@solana/web3.js");
+const { WALLET_PATH } = require("../../lib/constants");
+const { getBlsRegisterClient, getPath, readKeypair } = require("../utils");
 
 const registerAcceptAdminCommand = new Command("accept-admin")
   .option(
@@ -26,7 +25,7 @@ registerAcceptAdminCommand.action(async (options) => {
     console.log(chalk.green("registration accept admin success."));
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("accept admin of registration fail: " + e));
+    console.log(chalk.red("accept admin of registration failed: " + e));
     process.exit(1);
   }
 });

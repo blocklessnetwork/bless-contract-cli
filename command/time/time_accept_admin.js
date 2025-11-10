@@ -1,13 +1,13 @@
 const { Command, Argument } = require("commander");
 const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
-const { WALLET_PATH } = require("../lib/constants");
+const { WALLET_PATH } = require("../../lib/constants");
 const {
   getBlsTimeContractClient,
   getPath,
   readKeypair,
   bs58Message,
-} = require("./utils");
+} = require("../utils");
 const { PublicKey } = require("@solana/web3.js");
 
 const timeAcceptAdminCommand = new Command("accept-admin")
@@ -21,11 +21,11 @@ const timeAcceptAdminCommand = new Command("accept-admin")
   )
   .option(
     "--squads <true/false>",
-    "squads: if squads true, use squads to signature, default is false.",
+    "squads: if true, use Squads to sign the transaction; default: false.",
   )
   .option(
     "--pending <pending>",
-    "pending: if squads true, use pending admin to signature in squads",
+    "pending: if squads true, use pending admin to signature in Squads",
   )
   .option(
     "--signer <signer>",
@@ -51,7 +51,7 @@ timeAcceptAdminCommand.addArgument(mint).action(async (mint, options) => {
     try {
       mintPubkey = new PublicKey(mint);
     } catch (e) {
-      console.log(chalk.red("invaild mint parameter: " + e));
+      console.log(chalk.red("invalid mint parameter: " + e));
       process.exit(1);
     }
     const state = await client.blessTimeClient.getTimeState(mintPubkey);
@@ -95,7 +95,7 @@ timeAcceptAdminCommand.addArgument(mint).action(async (mint, options) => {
       process.exit(0);
     }
   } catch (e) {
-    console.log(chalk.red("accept admin of time contract fail: " + e));
+    console.log(chalk.red("accept admin of time contract failed: " + e));
     process.exit(1);
   }
 });

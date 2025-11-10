@@ -94,7 +94,7 @@ blesstokenCommand
       console.log(chalk.green("bless token initial success."));
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("bless token  initial fail: " + e));
+      console.log(chalk.red("bless token  initial failed: " + e));
       process.exit(1);
     }
   });

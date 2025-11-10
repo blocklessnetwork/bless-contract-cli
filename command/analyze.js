@@ -1,6 +1,5 @@
 const { Command, Argument } = require("commander");
-const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
-const anchor = require("@coral-xyz/anchor");
+const { getBlsRegisterClient } = require("./utils");
 const chalk = require("chalk");
 const { Keypair } = require("@solana/web3.js");
 const fs = require("node:fs");
@@ -58,7 +57,7 @@ analyzeCommand.addArgument(file).action(async (file, options) => {
     } while (rs != null && rs.length > 0);
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("analyze execute fail: " + e));
+    console.log(chalk.red("analyze execute failed: " + e));
     process.exit(1);
   }
 });

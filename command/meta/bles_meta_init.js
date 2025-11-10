@@ -1,8 +1,8 @@
 const { Command, Argument } = require("commander");
 const chalk = require("chalk");
-const { WALLET_PATH } = require("../lib/constants");
+const { WALLET_PATH } = require("../../lib/constants");
 const { PublicKey } = require("@solana/web3.js");
-const { getBlsContractClient, getPath, readKeypair } = require("./utils");
+const { getBlsContractClient, getPath, readKeypair } = require("../utils");
 
 const blessMetaInitCommand = new Command("init")
   .option(
@@ -39,7 +39,7 @@ blessMetaInitCommand.addArgument(mint).action(async (mint, options) => {
     console.log(chalk.green("bless token metadata account initial success."));
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("bless token metadata account initial fail: " + e));
+    console.log(chalk.red("bless token metadata account initial failed: " + e));
     process.exit(1);
   }
 });

@@ -2,8 +2,8 @@ const { Command, Argument } = require("commander");
 const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
 const ed = require("@noble/ed25519");
-const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
+const { getBlsRegisterClient, getPath, readKeypair } = require("../utils");
+const { WALLET_PATH } = require("../../lib/constants");
 const { PublicKey } = require("@solana/web3.js");
 
 const registerDoCommand = new Command("register")
@@ -71,7 +71,7 @@ registerDoCommand.addArgument(nodeid).action(async (nodeid, options) => {
     console.log(chalk.green("register success "));
     process.exit(0);
   } catch (e) {
-    console.log(chalk.red("register bless node id fail: " + e));
+    console.log(chalk.red("register bless node id failed: " + e));
     process.exit(1);
   }
 });

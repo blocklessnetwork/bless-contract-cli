@@ -1,6 +1,6 @@
 const { Command, Argument } = require("commander");
-const { getPath, readKeypair, getConnection } = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
+const { getPath, readKeypair, getConnection } = require("../utils");
+const { WALLET_PATH } = require("../../lib/constants");
 const Loader = require("./loader");
 const chalk = require("chalk");
 const nacl = require("tweetnacl");
@@ -64,7 +64,7 @@ upgradeCommand
       const tx = await connection.sendRawTransaction(transaction.serialize());
       console.log(chalk.green("program upgrade success: " + tx));
     } catch (e) {
-      console.log(chalk.red("program upgrade fail: " + e));
+      console.log(chalk.red("program upgrade failed: " + e));
     }
   });
 

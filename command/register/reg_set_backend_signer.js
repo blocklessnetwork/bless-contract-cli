@@ -1,8 +1,7 @@
 const { Command, Argument } = require("commander");
-const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
-const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
-const { WALLET_PATH } = require("../lib/constants");
+const { getBlsRegisterClient, getPath, readKeypair } = require("../utils");
+const { WALLET_PATH } = require("../../lib/constants");
 
 const registerBackendSignerCommand = new Command("bsigner")
   .option(
@@ -39,7 +38,7 @@ registerBackendSignerCommand
       process.exit(0);
     } catch (e) {
       console.log(
-        chalk.red("set the backend signer of registration fail: " + e),
+        chalk.red("set the backend signer of registration failed: " + e),
       );
       process.exit(1);
     }

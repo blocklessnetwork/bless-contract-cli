@@ -1,8 +1,8 @@
 const { Command, Argument } = require("commander");
 const anchor = require("@coral-xyz/anchor");
 const chalk = require("chalk");
-const { WALLET_PATH } = require("../lib/constants");
-const { getBlsRegisterClient, getPath, readKeypair } = require("./utils");
+const { WALLET_PATH } = require("../../lib/constants");
+const { getBlsRegisterClient, getPath, readKeypair } = require("../utils");
 const { PublicKey } = require("@solana/web3.js");
 
 const registerSetPendingAdminCommand = new Command("pending-admin")
@@ -36,16 +36,16 @@ registerSetPendingAdminCommand
         await client.nodeRegistrationClient.setRegistrationPendingAdminAccount(
           pendingAdmin,
         );
-        console.log(chalk.green("registration set pending admin success."));
+        console.log(chalk.green("Registration set pending admin success."));
       } else {
         const r = await client.nodeRegistrationClient.getNodeRegistration();
         console.log(
-          chalk.green("registration pending admin is " + r.pendingAdminAccount),
+          chalk.green("Registration pending admin is " + r.pendingAdminAccount),
         );
       }
       process.exit(0);
     } catch (e) {
-      console.log(chalk.red("set the pending admin fail: " + e));
+      console.log(chalk.red("Set the pending admin failed: " + e));
       process.exit(1);
     }
   });

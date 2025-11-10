@@ -1,17 +1,15 @@
 const { Command, Argument } = require("commander");
-const { Keypair, PublicKey } = require("@solana/web3.js");
+const { PublicKey } = require("@solana/web3.js");
 const chalk = require("chalk");
 const fs = require("fs");
 const cliProgress = require("cli-progress");
 const { streamArray } = require("stream-json/streamers/StreamArray");
 const { chain } = require("stream-chain");
 const { parser } = require("stream-json");
-const { pick } = require("stream-json/filters/Pick");
 const anchor = require("@coral-xyz/anchor");
 const keccak256 = require("keccak256");
 const { MerkleTree } = require("merkletreejs");
-const { formatTime } = require("./utils.js");
-const assert = require("assert");
+const { formatTime } = require("../utils.js");
 const { bs58 } = require("@coral-xyz/anchor/dist/cjs/utils/bytes/index.js");
 
 const genMerkleTreeCommand = new Command("gen_merkle_tree")
@@ -79,7 +77,7 @@ genMerkleTreeCommand.addArgument(file).action(async (file, options) => {
     ]);
     pipeline.on("end", () => {
       const tree = new MerkleTree(leaves, keccak256, { sortPairs: true });
-      delete leaves;
+      leaves = null;
       bar.update(50);
       writeStream.write("[");
       pipeline2.on("data", ({ key, value }) => {
@@ -122,9 +120,9 @@ genMerkleTreeCommand.addArgument(file).action(async (file, options) => {
         console.log(
           chalk.green(
             "\nMerkle tree root:" +
-              new PublicKey(tree.getRoot()).toBase58() +
-              ", spent time: " +
-              formatTime((new Date().getTime() - now) / 1000),
+            new PublicKey(tree.getRoot()).toBase58() +
+            ", spent time: " +
+            formatTime((new Date().getTime() - now) / 1000),
             " total: " + (last + 1),
           ),
         );
