@@ -197,7 +197,7 @@ Following is the help message.
 ```bash
 Usage: @blessnetwork/blesscontract blesstoken [options] <wallets> <mint> <mintAuthority>
 
-blesstoken: initial blesstoken registration
+blesstoken: initial blesstoken token mint and disptch bless token to wallet1-5 by rules.
 
 Arguments:
   wallets              wallets: wallets is the wallet 1-5 that distrubuted the bless token by the contract, value should be base58 sperate by `,`.
@@ -208,7 +208,22 @@ Arguments:
 
 Options:
   --cluster <cluster>  solana cluster: mainnet, testnet, devnet, localnet, <custom>
+  --programId <programId>                     Program ID: Specify the program ID when working on devnet, testnet, or localnet; it will not work on mainnet.
+  --payer <payer>                             the default payer: ~/.config/solana/id.json
   -h, --help           display help for command
+
+```
+
+Execute the following command to get the blesstoken-disable-mint help message.
+
+```bash
+npx @blessnetwork/blesscontract blesstoken-disable-mint --help
+```
+
+Execute the following command to disable mint authority.
+
+```bash
+npx @blessnetwork/blesscontract blesstoken-disable-mint <mint>
 ```
 
 1. Prepare the Mint Authory Keypair.

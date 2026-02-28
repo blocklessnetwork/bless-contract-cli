@@ -15,6 +15,7 @@ const tokenMetaAcceptAdminCommand = require("./command/bles_meta_accept_admin.js
 const blessMetaUpdateCommand = require("./command/bles_meta_update.js");
 const blessMetaCreateCommand = require("./command/bles_meta_create.js");
 const blessMetaInitCommand = require("./command/bles_meta_init.js");
+const blessTokenDisableMintCommand = require("./command/blesstoken_disable_mint.js");
 const program = new Command();
 
 async function main() {
@@ -41,6 +42,7 @@ async function main() {
 
   program.addCommand(registerCommand);
   program.addCommand(blesstokenCommand);
+  program.addCommand(blessTokenDisableMintCommand);
   program.addCommand(analyzeCommand);
   program.addCommand(timeCommand);
   program.addCommand(programCommand);
