@@ -25,7 +25,6 @@ const blessMetaCreateCommand = new Command("create")
     "signer: the signer is the payer of the bless meta, default: " +
       WALLET_PATH,
   )
-  .option("--multisig <multisig>", "multisig:  the multisig of the bless meta")
   .option(
     "--squads <true/false>",
     "squads: if squads true, use squads to signature, default is false.",
@@ -62,15 +61,6 @@ blessMetaCreateCommand
       const state =
         await client.blessTokenClient.getBlessTokenMetaState(mintPubkey);
       if (options.squads) {
-        if (options.multisig == null) {
-          console.log(chalk.red("multisig is required."));
-          process.exit(1);
-        }
-        const multisigPda = new PublicKey(options.multisig);
-        if (options.admin == null) {
-          console.log(chalk.red("admin is required."));
-          process.exit(1);
-        }
         const adminPubkey = new PublicKey(options.admin);
         if (state.admin.toBase58() != adminPubkey.toBase58()) {
           console.log(

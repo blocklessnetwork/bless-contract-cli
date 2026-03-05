@@ -40,6 +40,14 @@ function encodeInstruction(data) {
   dataLayout.addVariant(3, BufferLayout.struct([]), "Upgrade");
   dataLayout.addVariant(4, BufferLayout.struct([]), "SetAuthority");
   dataLayout.addVariant(5, BufferLayout.struct([]), "Close");
+  const extendProgram = BufferLayout.struct([
+    BufferLayout.u32("additional_bytes"),
+  ]);
+  dataLayout.addVariant(6, extendProgram, "ExtendProgram");
+  const extendProgramChecked = BufferLayout.struct([
+    BufferLayout.u32("additional_bytes"),
+  ]);
+  dataLayout.addVariant(9, extendProgramChecked, "ExtendProgramChecked");
 
   // UpgradeableLoaderInstruction tag + offset + chunk length + chunk data
   const instructionBuffer = Buffer.alloc(4 + 4 + 8 + Loader.chunkSize);
@@ -171,6 +179,58 @@ class Loader {
       ],
       programId: UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
       data: encodeInstruction({ SetAuthority: {} }),
+    });
+  }
+
+  static async extendProgramInstruction(program, payer, additionalBytes) {
+    const [programDataKey, _nonce] = PublicKey.findProgramAddressSync(
+      [program.toBuffer()],
+      UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
+    );
+    return new TransactionInstruction({
+      keys: [
+        { pubkey: programDataKey, isSigner: false, isWritable: true },
+        { pubkey: program, isSigner: false, isWritable: true },
+        {
+          pubkey: SystemProgram.programId,
+          isSigner: false,
+          isWritable: false,
+        },
+        { pubkey: payer, isSigner: true, isWritable: true },
+      ],
+      programId: UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
+      data: encodeInstruction({
+        ExtendProgram: { additional_bytes: additionalBytes },
+      }),
+    });
+  }
+
+  static async extendProgramCheckedInstruction(
+    program,
+    authority,
+    payer,
+    additionalBytes,
+  ) {
+    const [programDataKey, _nonce] = PublicKey.findProgramAddressSync(
+      [program.toBuffer()],
+      UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
+    );
+    return new TransactionInstruction({
+      keys: [
+        { pubkey: programDataKey, isSigner: false, isWritable: true },
+        { pubkey: program, isSigner: false, isWritable: true },
+        { pubkey: authority, isSigner: true, isWritable: false },
+        {
+          pubkey: SystemProgram.programId,
+          isSigner: false,
+          isWritable: false,
+        },
+        { pubkey: payer, isSigner: true, isWritable: true },
+      ],
+      programId: UPGRADEABLE_BPF_LOADER_PROGRAM_ID,
+      data: encodeInstruction({
+        ExtendProgramChecked: { additional_bytes: additionalBytes },
+      }),
     });
   }
 
